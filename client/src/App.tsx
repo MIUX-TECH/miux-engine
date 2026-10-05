@@ -27,22 +27,22 @@ const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(false); 
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [apiKey, setApiKey] = useState<string>('');
-  const [modelName, setModelName] = useState<string>('ag/gemini-3.7-flash-medium');
+  const [modelName, setModelName] = useState<string>('Google AI (Auto)');
 
   // Toast State
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Generation Parameters Store (for regeneration consistency)
-  const [lastModelType, setLastModelType] = useState<string | undefined>(undefined); 
+  const [lastModelType, setLastModelType] = useState<string | undefined>(undefined);
   const [currentSceneCount, setCurrentSceneCount] = useState<number>(5);
   const [currentChaosLevel, setCurrentChaosLevel] = useState<number>(3);
   const [currentNarrationStyle, setCurrentNarrationStyle] = useState<NarrationStyle>('monolog');
 
   // Shared Options (Minimal)
   const options: GenerationOptions = {
-    textOverlayMode: 'none', 
-    narrationMode: 'none',   
-    narrationStyle: currentNarrationStyle, 
+    textOverlayMode: 'none',
+    narrationMode: 'none',
+    narrationStyle: currentNarrationStyle,
     sceneCount: currentSceneCount, // Synced with state
   };
 
@@ -56,27 +56,26 @@ const App: React.FC = () => {
   ];
 
   useEffect(() => {
-    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-    const defaultBaseUrl = isLocal ? `http://${window.location.hostname}:20128` : '';
-
     let storedKey = localStorage.getItem('miux_api_key') || '';
     if (storedKey === 'sk-22e56605e5c01f28-ixaxdm-90bafc3a' || storedKey === 'sk-46ef15de80a3d5cc-57agvr-8387adb4') {
-        if (!isLocal) {
-            storedKey = '';
-            localStorage.removeItem('miux_api_key');
-        }
+        storedKey = '';
+        localStorage.removeItem('miux_api_key');
     }
     setApiKey(storedKey);
 
-    const storedBaseUrl = localStorage.getItem('miux_base_url') ?? defaultBaseUrl;
-    localStorage.setItem('miux_base_url', storedBaseUrl);
+    // Clean up local proxy and reset to pure Google AI Studio direct
+    let storedBaseUrl = localStorage.getItem('miux_base_url') || '';
+    if (storedBaseUrl.includes('localhost:20128') || storedBaseUrl.includes('127.0.0.1:20128')) {
+        storedBaseUrl = '';
+        localStorage.setItem('miux_base_url', '');
+    }
 
     let storedModel = localStorage.getItem('miux_model');
-    if (!storedModel || storedModel === 'gemini-2.5-flash' || storedModel === 'gemini-1.5-flash') {
-        storedModel = storedBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash';
+    if (!storedModel || storedModel === 'gemini-2.5-flash' || storedModel === 'gemini-1.5-flash' || storedModel === 'ag/gemini-3.7-flash-medium') {
+        storedModel = 'auto';
+        localStorage.setItem('miux_model', 'auto');
     }
-    localStorage.setItem('miux_model', storedModel);
-    setModelName(storedModel);
+    setModelName(storedModel === 'auto' ? 'Google AI (Auto)' : storedModel);
 
     const hasVisited = localStorage.getItem('miux_black_visited');
     if (!hasVisited) {
@@ -117,22 +116,22 @@ const App: React.FC = () => {
   };
 
   const handleSaveApiKey = (key: string, baseUrl?: string, model?: string) => {
+      const cleanBaseUrl = baseUrl || '';
+      const cleanModel = model || 'auto';
       localStorage.setItem('miux_api_key', key);
-      if (baseUrl !== undefined) localStorage.setItem('miux_base_url', baseUrl);
-      if (model !== undefined) {
-          localStorage.setItem('miux_model', model);
-          setModelName(model);
-      }
+      localStorage.setItem('miux_base_url', cleanBaseUrl);
+      localStorage.setItem('miux_model', cleanModel);
+      setModelName('Google AI (Auto)');
       setApiKey(key);
       setShowApiKeyModal(false);
-      showToast("Konfigurasi AI Berhasil Disimpan", 'success');
+      showToast("API Key Google AI Studio Berhasil Diaktifkan", 'success');
   };
 
   const clearApiKey = () => {
       localStorage.removeItem('miux_api_key');
       setApiKey('');
       setShowApiKeyModal(true);
-      showToast("Konfigurasi AI Direset", 'info');
+      showToast("API Key Direset", 'info');
   };
 
   const autoSaveToHistory = async (img: UploadedImage, result: AnalysisResponse, modelType: string, sceneCount: number, chaosLevel: number, narrationStyle: NarrationStyle, secondaryImage?: UploadedImage | null) => {

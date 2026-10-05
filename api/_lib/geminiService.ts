@@ -276,11 +276,11 @@ export interface AiSettings {
 export const getAiSettings = (): AiSettings => {
     const baseUrl = process.env.AI_BASE_URL || '';
     const apiKey = process.env.API_KEY || process.env.VITE_9ROUTER_API_KEY || '';
-    let model = process.env.AI_MODEL || (baseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash');
+    let model = process.env.AI_MODEL || (baseUrl ? 'ag/gemini-3.7-flash-medium' : 'auto');
 
-    // Auto-normalize ag/gemini-3.7-flash to ag/gemini-3.7-flash-medium
+    // Auto-normalize legacy or shorthand models
     if (model === 'ag/gemini-3.7-flash' || model === 'gemini-3.7-flash') {
-        model = baseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash';
+        model = baseUrl ? 'ag/gemini-3.7-flash-medium' : 'auto';
     }
 
     return { baseUrl, model, apiKey };
@@ -296,6 +296,27 @@ export const parseApiKeys = (input?: string): string[] => {
 };
 
 let globalKeyIndex = 0;
+let globalModelIndex = 0;
+
+// All verified Google AI Studio models supporting multimodal vision + structured JSON output
+const GOOGLE_STUDIO_MODELS = [
+    'gemini-3.8-flash',
+    'gemini-flash-latest',
+    'gemini-3.7-flash',
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
+    'gemini-2.5-flash',
+    'gemini-2.5-pro',
+    'gemini-2.0-flash',
+    'gemini-pro-latest'
+];
+
+const PROXY_ROUTER_MODELS = [
+    'ag/gemini-3.7-flash-medium',
+    'ag/gemini-3.8-flash-medium',
+    'ag/gemini-3.8-flash',
+    'ag/gemini-pro-agent'
+];
 
 export const executeWithKeyPool = async <T>(
     explicitKey: string | undefined,
@@ -313,28 +334,45 @@ export const executeWithKeyPool = async <T>(
     const keys = userKeys.length > 0 ? userKeys : envKeys;
 
     if (keys.length === 0) {
-        throw new Error("API Key tidak ditemukan. Silakan masukkan API Key di Pengaturan.");
+        throw new Error("API Key tidak ditemukan. Silakan masukkan API Key Google AI Studio di Pengaturan.");
     }
 
     const effectiveBaseUrl = (options?.baseUrl !== undefined && options.baseUrl !== null && options.baseUrl.trim() !== '')
         ? options.baseUrl.trim()
         : settings.baseUrl;
 
-    // Determine candidate models
+    // Determine candidate models with automatic rotation & failover
     let candidateModels: string[] = [];
     if (options?.isImageGeneration) {
-        candidateModels = ['imagen-3.0-generate-002', 'gemini-3.1-flash-image', 'gemini-2.5-flash-image', 'gemini-2.5-flash'];
+        const imageModels = ['imagen-3.0-generate-002', 'gemini-3.1-flash-image', 'gemini-2.5-flash-image', 'gemini-2.5-flash'];
+        const startImgIdx = globalModelIndex % imageModels.length;
+        candidateModels = [...imageModels.slice(startImgIdx), ...imageModels.slice(0, startImgIdx)];
     } else if (options?.isAudioGeneration) {
-        candidateModels = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview', 'gemini-2.5-flash-preview-tts', 'gemini-2.0-flash'];
+        const audioModels = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview', 'gemini-2.5-flash-preview-tts', 'gemini-2.0-flash'];
+        const startAudIdx = globalModelIndex % audioModels.length;
+        candidateModels = [...audioModels.slice(startAudIdx), ...audioModels.slice(0, startAudIdx)];
     } else {
-        const primary = options?.preferredModel || settings.model || (effectiveBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash');
+        const isAuto = !options?.preferredModel || options.preferredModel === 'auto' || options.preferredModel === '';
+
         if (effectiveBaseUrl) {
-            candidateModels = [primary, 'ag/gemini-3.7-flash-medium', 'ag/gemini-3.8-flash-medium', 'ag/gemini-3.8-flash', 'ag/gemini-pro-agent'];
+            const startProxyIdx = globalModelIndex % PROXY_ROUTER_MODELS.length;
+            const rotatedProxy = [...PROXY_ROUTER_MODELS.slice(startProxyIdx), ...PROXY_ROUTER_MODELS.slice(0, startProxyIdx)];
+            candidateModels = (!isAuto && options?.preferredModel)
+                ? [options.preferredModel, ...rotatedProxy]
+                : rotatedProxy;
         } else {
-            candidateModels = [primary, 'gemini-3.8-flash', 'gemini-flash-latest', 'gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-pro-latest'];
+            // Google AI Studio: rotate starting model smoothly across all available models
+            const startGoogleIdx = globalModelIndex % GOOGLE_STUDIO_MODELS.length;
+            const rotatedGoogle = [...GOOGLE_STUDIO_MODELS.slice(startGoogleIdx), ...GOOGLE_STUDIO_MODELS.slice(0, startGoogleIdx)];
+            candidateModels = (!isAuto && options?.preferredModel && !GOOGLE_STUDIO_MODELS.includes(options.preferredModel))
+                ? [options.preferredModel, ...rotatedGoogle]
+                : rotatedGoogle;
         }
     }
     candidateModels = Array.from(new Set(candidateModels.filter(Boolean)));
+
+    // Increment global rotation index for next call
+    globalModelIndex = (globalModelIndex + 1) % 10000;
 
     // Round-robin key rotation
     const startIdx = globalKeyIndex % keys.length;
@@ -397,13 +435,13 @@ export const executeWithKeyPool = async <T>(
 
     let userFriendlyMsg = "Semua kombinasi model dan API Key gagal.";
     if (detailedErr.includes("denied access") || detailedErr.includes("403")) {
-        userFriendlyMsg = "Akses ditolak (HTTP 403 - Your project has been denied access). API Key Google AI Studio Anda tidak diizinkan atau proyek ditangguhkan. Silakan buat API Key baru di Google AI Studio atau gunakan endpoint proxy (9Router).";
+        userFriendlyMsg = "Akses ditolak (HTTP 403 - Project denied access). API Key Google AI Studio Anda ditolak atau project dinonaktifkan. Silakan buat API Key baru gratis di https://aistudio.google.com/app/apikey.";
     } else if (detailedErr.includes("API_KEY_INVALID") || detailedErr.includes("401")) {
-        userFriendlyMsg = "API Key tidak valid (HTTP 401). Silakan periksa kembali API Key di Pengaturan.";
+        userFriendlyMsg = "API Key tidak valid (HTTP 401). Silakan periksa kembali API Key Google AI Studio di Pengaturan.";
     } else if (detailedErr.includes("RESOURCE_EXHAUSTED") || detailedErr.includes("429")) {
-        userFriendlyMsg = "Batas kuota API tercapai (HTTP 429 - Quota Exceeded). Silakan coba lagi beberapa saat lagi atau gunakan API Key lain.";
+        userFriendlyMsg = "Batas kuota API tercapai (HTTP 429 - Quota Exceeded). Silakan coba lagi beberapa saat lagi atau tambahkan API Key cadangan di Pengaturan.";
     } else if (detailedErr.includes("404")) {
-        userFriendlyMsg = "Model tidak ditemukan (HTTP 404). Endpoint atau model yang dipilih tidak tersedia.";
+        userFriendlyMsg = "Model tidak ditemukan (HTTP 404). Sistem sedang merotasi ke model lain secara otomatis.";
     }
 
     throw new Error(`${userFriendlyMsg}\n\nRincian error:\n${detailedErr}`);
