@@ -71,7 +71,10 @@ const App: React.FC = () => {
     const storedBaseUrl = localStorage.getItem('miux_base_url') ?? defaultBaseUrl;
     localStorage.setItem('miux_base_url', storedBaseUrl);
 
-    const storedModel = localStorage.getItem('miux_model') || (storedBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-2.5-flash');
+    let storedModel = localStorage.getItem('miux_model');
+    if (!storedModel || storedModel === 'gemini-2.5-flash' || storedModel === 'gemini-1.5-flash') {
+        storedModel = storedBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash';
+    }
     localStorage.setItem('miux_model', storedModel);
     setModelName(storedModel);
 

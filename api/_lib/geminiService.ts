@@ -276,11 +276,11 @@ export interface AiSettings {
 export const getAiSettings = (): AiSettings => {
     const baseUrl = process.env.AI_BASE_URL || '';
     const apiKey = process.env.API_KEY || process.env.VITE_9ROUTER_API_KEY || '';
-    let model = process.env.AI_MODEL || (baseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-2.5-flash');
+    let model = process.env.AI_MODEL || (baseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash');
 
     // Auto-normalize ag/gemini-3.7-flash to ag/gemini-3.7-flash-medium
     if (model === 'ag/gemini-3.7-flash' || model === 'gemini-3.7-flash') {
-        model = 'ag/gemini-3.7-flash-medium';
+        model = baseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash';
     }
 
     return { baseUrl, model, apiKey };
@@ -290,7 +290,7 @@ export const parseApiKeys = (input?: string): string[] => {
     if (!input) return [];
     const list = input
         .split(/[\n,;]+/)
-        .map(k => k.trim())
+        .map(k => k.trim().replace(/^Bearer\s+/i, ''))
         .filter(k => k.length > 0);
     return Array.from(new Set(list));
 };
@@ -323,15 +323,15 @@ export const executeWithKeyPool = async <T>(
     // Determine candidate models
     let candidateModels: string[] = [];
     if (options?.isImageGeneration) {
-        candidateModels = ['imagen-3.0-generate-002', 'gemini-2.5-flash', 'gemini-2.0-flash'];
+        candidateModels = ['imagen-3.0-generate-002', 'gemini-3.1-flash-image', 'gemini-2.5-flash-image', 'gemini-2.5-flash'];
     } else if (options?.isAudioGeneration) {
-        candidateModels = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-3.8-flash-tts'];
+        candidateModels = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview', 'gemini-2.5-flash-preview-tts', 'gemini-2.0-flash'];
     } else {
-        const primary = options?.preferredModel || settings.model || (effectiveBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-2.5-flash');
+        const primary = options?.preferredModel || settings.model || (effectiveBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash');
         if (effectiveBaseUrl) {
             candidateModels = [primary, 'ag/gemini-3.7-flash-medium', 'ag/gemini-3.8-flash-medium', 'ag/gemini-3.8-flash', 'ag/gemini-pro-agent'];
         } else {
-            candidateModels = [primary, 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro'];
+            candidateModels = [primary, 'gemini-3.8-flash', 'gemini-flash-latest', 'gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-pro-latest'];
         }
     }
     candidateModels = Array.from(new Set(candidateModels.filter(Boolean)));
@@ -368,20 +368,24 @@ export const executeWithKeyPool = async <T>(
                 const status = err.status || err.statusCode;
                 const msg = err.message || String(err);
                 const logTag = `[KeyPool ${ki + 1}/${prioritizedKeys.length} (${maskedKey}) | Model: ${currentModel}]`;
-                attemptedErrors.push(`${logTag} -> ${status || 'ERR'}: ${msg.substring(0, 120)}`);
-                console.warn(`${logTag} Error:`, status || '', msg.substring(0, 120));
+                attemptedErrors.push(`${logTag} -> ${status || 'ERR'}: ${msg.substring(0, 150)}`);
+                console.warn(`${logTag} Error:`, status || '', msg.substring(0, 150));
 
                 const isKeyAuthError = status === 401 ||
                                        msg.includes('API_KEY_INVALID') ||
                                        msg.includes('Invalid API key') ||
                                        msg.includes('invalid_api_key');
 
+                const isProjectDenied = status === 403 ||
+                                        msg.includes('denied access') ||
+                                        msg.includes('PERMISSION_DENIED');
+
                 const isKeyQuotaExhausted = status === 429 ||
                                             msg.includes('RESOURCE_EXHAUSTED') ||
                                             msg.includes('insufficient_quota');
 
-                // If key is definitely invalid, or quota exhausted and there are alternative keys, skip to next key
-                if (isKeyAuthError || (isKeyQuotaExhausted && prioritizedKeys.length > 1)) {
+                // If key is definitely invalid or denied access, skip remaining models for this key immediately
+                if (isKeyAuthError || isProjectDenied || (isKeyQuotaExhausted && prioritizedKeys.length > 1)) {
                     break;
                 }
             }
@@ -390,7 +394,19 @@ export const executeWithKeyPool = async <T>(
 
     const detailedErr = attemptedErrors.join('\n');
     console.error("[KeyPool Exhausted] Semua kombinasi API Key & Model gagal:\n" + detailedErr);
-    throw new Error(`Semua API Key & Model di Key Pool gagal.\n${detailedErr}`);
+
+    let userFriendlyMsg = "Semua kombinasi model dan API Key gagal.";
+    if (detailedErr.includes("denied access") || detailedErr.includes("403")) {
+        userFriendlyMsg = "Akses ditolak (HTTP 403 - Your project has been denied access). API Key Google AI Studio Anda tidak diizinkan atau proyek ditangguhkan. Silakan buat API Key baru di Google AI Studio atau gunakan endpoint proxy (9Router).";
+    } else if (detailedErr.includes("API_KEY_INVALID") || detailedErr.includes("401")) {
+        userFriendlyMsg = "API Key tidak valid (HTTP 401). Silakan periksa kembali API Key di Pengaturan.";
+    } else if (detailedErr.includes("RESOURCE_EXHAUSTED") || detailedErr.includes("429")) {
+        userFriendlyMsg = "Batas kuota API tercapai (HTTP 429 - Quota Exceeded). Silakan coba lagi beberapa saat lagi atau gunakan API Key lain.";
+    } else if (detailedErr.includes("404")) {
+        userFriendlyMsg = "Model tidak ditemukan (HTTP 404). Endpoint atau model yang dipilih tidak tersedia.";
+    }
+
+    throw new Error(`${userFriendlyMsg}\n\nRincian error:\n${detailedErr}`);
 };
 
 export const getGenAIClient = (explicitKey?: string) => {

@@ -23,7 +23,10 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
       const defaultHostUrl = isLocal ? `http://${window.location.hostname}:20128` : '';
       const savedKey = localStorage.getItem('miux_api_key') || '';
       const savedBaseUrl = localStorage.getItem('miux_base_url') ?? defaultHostUrl;
-      const savedModel = localStorage.getItem('miux_model') || (savedBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-2.5-flash');
+      const rawSavedModel = localStorage.getItem('miux_model');
+      const savedModel = (rawSavedModel && rawSavedModel !== 'gemini-2.5-flash' && rawSavedModel !== 'gemini-1.5-flash')
+        ? rawSavedModel
+        : (savedBaseUrl ? 'ag/gemini-3.7-flash-medium' : 'gemini-3.8-flash');
 
       setInputKey(savedKey);
       setBaseUrl(savedBaseUrl);
@@ -55,7 +58,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
 
   const applyGoogleStudioPreset = () => {
     setBaseUrl('');
-    setModel('gemini-2.5-flash');
+    setModel('gemini-3.8-flash');
     setError('');
   };
 
@@ -131,7 +134,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
                 <ol className="text-[11px] text-zinc-400 space-y-1 list-decimal list-inside font-sans">
                     <li>Kunjungi <strong className="text-zinc-200">aistudio.google.com/app/apikey</strong></li>
                     <li>Login dengan akun Google & klik tombol <strong className="text-neon/90">"Create API key"</strong></li>
-                    <li>Salin key (berawalan <code className="text-zinc-300 bg-zinc-800/80 px-1 py-0.5 rounded text-[10px]">AIzaSy...</code>) dan tempel di bawah</li>
+                    <li>Salin API Key Anda dan tempel di form bawah</li>
                 </ol>
             </div>
         )}
@@ -141,8 +144,8 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
                 <label className="block text-[10px] font-bold text-neon/70 uppercase tracking-widest mb-1.5">
                     Endpoint Base URL
                 </label>
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
                     placeholder="Contoh: http://localhost:20128 (kosongkan untuk default Google)"
@@ -161,13 +164,13 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
                     type="text"
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
-                    placeholder={baseUrl ? "ag/gemini-3.7-flash-medium" : "gemini-2.5-flash"}
+                    placeholder={baseUrl ? "ag/gemini-3.7-flash-medium" : "gemini-3.8-flash"}
                     className="w-full bg-black/50 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon/20 transition-all font-mono text-xs"
                 />
                 <p className="text-[10px] text-zinc-500 mt-1 font-mono">
                     {baseUrl
                         ? <>Rekomendasi 9router: <code className="text-neon/80">ag/gemini-3.7-flash-medium</code> atau <code className="text-neon/80">ag/gemini-3.8-flash-medium</code></>
-                        : <>Rekomendasi Google AI Studio: <code className="text-neon/80">gemini-2.5-flash</code> atau <code className="text-neon/80">gemini-1.5-flash</code> (multimodal cepat & stabil)</>
+                        : <>Rekomendasi Google AI Studio: <code className="text-neon/80">gemini-3.8-flash</code> atau <code className="text-neon/80">gemini-flash-latest</code> (multimodal cepat & stabil)</>
                     }
                 </p>
             </div>
