@@ -1,0 +1,37 @@
+/* MIUX Studio Styles */
+
+/* Cyber Grid Background */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(163, 230, 53, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(163, 230, 53, 0.04) 1px, transparent 1px);
+}
+
+/* Scanline Effect */
+.scanline {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.3)
+  );
+  background-size: 100% 4px;
+}
+
+/* Cyber Scanning Line Animation */
+@keyframes cyber-scan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(1000%); opacity: 0; }
+}
+
+.animate-cyber-scan {
+  animation: cyber-scan 6s linear infinite;
+}
+
+/* Cyber Glow Badge */
+.cyber-glow {
+  box-shadow: 0 0 15px rgba(163, 230, 53, 0.2), inset 0 0 10px rgba(163, 230, 53, 0.1);
+}

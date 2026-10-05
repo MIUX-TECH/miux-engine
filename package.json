@@ -1,0 +1,27 @@
+{
+  "name": "miux-black-edition",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node cyber_server.cjs",
+    "dev": "node cyber_server.cjs --dev",
+    "bot": "node cyber_server.cjs",
+    "build": "vite build",
+    "preview": "node cyber_server.cjs --no-build",
+    "server": "cd server && npx tsx src/index.ts",
+    "server:dev": "cd server && npx tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.37.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vercel/node": "^17.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
