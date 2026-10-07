@@ -621,30 +621,39 @@ export const POOL_HUMAN_IMPERFECTION = toWeighted(RAW_HUMAN_IMPERFECTION);
 // === 5. VIDEO GENERATION POOLS ===
 
 const RAW_CAMERA_AMATEUR = [
-    "Static tripod shot, subject moves in frame", "Slow handheld pan following the subject",
-    "Slight handheld shake, amateur cameraman", "Subtle breathing sway, handheld", 
-    "Dutch angle (slightly tilted), stable hold", "POV shot, looking down at hands/product", 
-    "Camera placed on a table, looking up", "Handheld but trying to keep still", 
-    "Static shot, subject walks towards camera",
-    "Subtle handheld breathing motion with minor natural tilt",
-    "Slow casual follow tracking behind walking subject",
-    "Static camera on cafe table with soft foreground passing blur",
-    "Smooth tilt-down from face to outfit hemline",
-    "Slight handheld push-in following model's gesture"
+    "Static tripod shot with dynamic human and fabric movement in frame",
+    "Casual handheld follow pan tracking subject's movement",
+    "Natural handheld micro-shake with authentic social media vlog rhythm",
+    "Subtle breathing sway handheld with steady subject framing",
+    "Dutch angle snapshot hold with natural handheld stability",
+    "POV chest-level shot following subject's hands and garment drape",
+    "Low angle table-top phone perspective looking up at subject moving naturally",
+    "Stable handheld framing with organic micro-adjustments following gestures",
+    "Static wide shot as subject walks naturally forward into medium close-up",
+    "Subtle handheld breathing motion with organic tilt responding to posture",
+    "Slow casual follow tracking behind walking subject (maintaining consistent back perspective)",
+    "Eye-level handheld walking glide pacing alongside subject",
+    "Smooth handheld tilt-down tracking from face to outfit hemline motion",
+    "Subtle handheld push-in accentuating garment fabric texture and fold physics"
 ];
 export const POOL_CAMERA_AMATEUR = toWeighted(RAW_CAMERA_AMATEUR);
 
 const RAW_CAMERA_CINEMATIC = [
-    "Smooth slow push-in zoom to subject's face", "Smooth tracking shot, walking alongside subject",
-    "Slow optical zoom in, cinematic blur", "Static shot, focus pull from background to foreground",
-    "Gentle panning shot revealing the scene", "Low angle shot, slight upward tilt",
-    "Over-the-shoulder shot, slight sway", "Smooth slow zoom out revealing environment", 
-    "High angle shot, looking down steadily", "Cinematic slow-motion pan",
-    "Smooth arc shot circling the subject slowly",
-    "Low-angle smooth tracking shot alongside walking subject",
-    "Gentle 90-degree orbital pan revealing garment back and silhouette",
-    "Precise optical rack focus from background environment to outfit zipper",
-    "Slow smooth crane-down from overhead to eye level"
+    "Smooth cinematic slow push-in tracking subject's natural expressions",
+    "Smooth parallel tracking dolly pacing alongside walking subject",
+    "Slow optical zoom-in highlighting garment texture with cinematic background bokeh",
+    "Precise rack focus from background street environment to outfit details",
+    "Gentle horizontal dolly pan tracking subject's stride",
+    "Low angle upward tilt tracking confident walking stride and silhouette",
+    "Over-the-shoulder perspective with gentle gimbal stabilization",
+    "Smooth slow pull-back revealing surrounding environment while subject walks",
+    "Elevated three-quarter cinematic glide maintaining consistent subject angle",
+    "Cinematic slow-motion 60fps tracking pan capturing natural hair and fabric sway",
+    "Smooth 30-degree subtle semi-arc glide highlighting garment drape without turning around",
+    "Low-angle dynamic tracking shot gliding alongside walking subject",
+    "Gentle 35-degree dynamic orbital track accentuating fabric flow while keeping subject angled towards camera",
+    "Precise optical rack focus from background environment to outfit zipper and chest print",
+    "Slow smooth jib crane-down from eye level to waist level following subject movement"
 ];
 export const POOL_CAMERA_CINEMATIC = toWeighted(RAW_CAMERA_CINEMATIC);
 
@@ -652,17 +661,12 @@ export const resolveCameraMotion = (locationDesc: string, chaosLevel: number): {
     const desc = locationDesc.toLowerCase();
     const isDark = desc.includes('night') || desc.includes('dark') || desc.includes('dim') || desc.includes('basement') || desc.includes('club') || desc.includes('neon') || desc.includes('black') || desc.includes('fluorescent');
 
-    if (isDark) {
-        // Force safe, minimal movement for dark scenes to prevent AI glitches
-        return { label: pickWeightedRandom(POOL_CAMERA_AMATEUR, 1).label, isCinematic: false };
+    // Modern AI video models handle low-light motion cleanly; we scale motion organically with chaosLevel
+    const useCinematic = Math.random() > 0.45;
+    if (useCinematic) {
+        return { label: pickWeightedRandom(POOL_CAMERA_CINEMATIC, chaosLevel).label, isCinematic: true };
     } else {
-        // Bright/Outdoor: Can use cinematic or amateur
-        const useCinematic = Math.random() > 0.5;
-        if (useCinematic) {
-            return { label: pickWeightedRandom(POOL_CAMERA_CINEMATIC, chaosLevel).label, isCinematic: true };
-        } else {
-            return { label: pickWeightedRandom(POOL_CAMERA_AMATEUR, chaosLevel).label, isCinematic: false };
-        }
+        return { label: pickWeightedRandom(POOL_CAMERA_AMATEUR, chaosLevel).label, isCinematic: false };
     }
 };
 

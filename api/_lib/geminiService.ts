@@ -38,6 +38,10 @@ no limb distortion
 no logo distortion
 no text warping
 no background warping
+no garment morphing
+no 180 degree turn
+no 360 spin
+no unreferenced garment side
 no camera jump
 no lighting shift
 no flicker
@@ -48,7 +52,19 @@ no beauty filter
 
 const HYPER_REALISM_VIDEO_BASE = `
 (RAW VIDEO, IPHONE 15 PRO MAX FOOTAGE).
-viral tiktok style, amateur handheld realism, authentic look, unedited, natural film grain, no cinematic grading, no HDR look.
+viral tiktok style, authentic kinetic realism, unedited, natural film grain, realistic fabric drape and gravity physics, no cinematic grading, no HDR look.
+`;
+
+const VIDEO_TRAINING_RULES = `
+>>> VIDEO GENERATION TRAINING & KINETIC RULES <<<
+- One continuous, fluid sequence per shot (4-5 seconds realistic temporal pacing).
+- Realistic subject motion: organic walking stride, natural weight shift, adjusting posture, breathing, natural hand gestures, or casual interaction.
+- Natural garment & fabric physics: fabric sways naturally with body stride, folds crease organically under gravity, seams and hemline respond to motion.
+- CRITICAL PERSPECTIVE LOCK:
+  * Strict single-perspective consistency with the scene's starting frame and active reference ('front' or 'back').
+  * NEVER rotate 180° or 360° around the subject. NEVER turn the model's back to the camera if starting from the front, and vice versa.
+  * If the scene shows front, camera and model stay within a frontal 35° arc. If showing back, stay exclusively on the rear angle.
+- Controlled camera dynamics: smooth follow tracking, gentle push-in, low-angle stride glide, or authentic handheld micro-shake. Avoid abrupt jerky pan/tilt while zooming.
 `;
 
 // === 5. SCHEMAS ===
@@ -69,12 +85,12 @@ const videoStructureSchema = {
     type: Type.OBJECT,
     description: "Detailed motion breakdown for Video Generation. MUST BE IN ENGLISH.",
     properties: {
-        subject_movement: { type: Type.STRING, description: "Micro-movements ONLY. e.g. 'Slowly adjusting glasses', 'Subtle breathing motion', 'Minimal movement'." },
-        scene_atmosphere: { type: Type.STRING, description: "Lighting and mood details. e.g. 'Harsh overhead fluorescent, slight green tint'." },
-        micro_story: { type: Type.STRING, description: "Short emotional context. e.g. 'Subject is feeling impatient, tapping fingers before taking a sip.'" },
-        camera_motion: { type: Type.STRING, description: "Specific mathematical camera movement. e.g. 'Static handheld with subtle micro shake. SMOOTH DIGITAL ZOOM PUSH-IN: 3-5% over 4 seconds'." },
-        product_placement: { type: Type.STRING, description: "How the product is shown and remains stable. e.g. 'Logo and Japanese text on chest clearly visible and sharp'." },
-        engine_safety_rules: { type: Type.STRING, description: "Specific safety rules for this scene to prevent glitches. e.g. 'no zoom jump, no focus breathing glitch, no face distortion'." }
+        subject_movement: { type: Type.STRING, description: "Fluid, natural human kinetic motion with realistic fabric drape and gravity physics (e.g., 'Model walking forward naturally with casual cadence, jacket gently swaying with each stride, pausing at second 3 to brush hair behind ear'). KEEP SUBJECT ANGLE FACING CAMERA CONSISTENT WITH ACTIVE REFERENCE. NO 180-degree or 360-degree turns." },
+        scene_atmosphere: { type: Type.STRING, description: "Lighting and mood details. e.g. 'Harsh overhead fluorescent, slight green tint, natural shadows'." },
+        micro_story: { type: Type.STRING, description: "Short emotional context and kinetic intention. e.g. 'Subject is feeling confident, striding down the street, checking cuff before pausing.'" },
+        camera_motion: { type: Type.STRING, description: "Specific camera movement and framing. e.g. 'Smooth eye-level tracking dolly gliding forward alongside walking subject with subtle handheld stabilization'." },
+        product_placement: { type: Type.STRING, description: "How the product is shown and remains stable. e.g. 'Logo and graphic print on chest clearly visible, fabric creases responding naturally to movement'." },
+        engine_safety_rules: { type: Type.STRING, description: "Specific safety rules for this scene to prevent glitches. e.g. 'Strict perspective lock matching active reference, no 180-degree turns, no garment morphing, stable lighting across frames'." }
     },
     required: ["subject_movement", "scene_atmosphere", "micro_story", "camera_motion", "product_placement", "engine_safety_rules"]
 };
@@ -184,49 +200,65 @@ Lighting: ${lighting}
 Angle: ${angle}`.trim();
 };
 
-const assembleVideoPrompt = (logic: any, videoArtifacts: string, isCinematic: boolean, fallbackDesc?: string): string => {
+export const assembleVideoPrompt = (logic: any, videoArtifacts: string, isCinematic: boolean, fallbackDesc?: string, activeReference?: string): string => {
     const l = logic || {};
     const subject = l.subject_desc || fallbackDesc || 'Authentic candid subject';
-    const movement = l.subject_movement || 'Subtle natural micro-movements and breathing';
-    const product = l.product_placement || 'Worn naturally and sharp';
+    const movement = l.subject_movement || 'Natural walking cadence and subtle garment fabric sway';
+    const product = l.product_placement || 'Worn naturally with clear fabric drape and details';
     const scene = l.scene_atmosphere || 'Natural ambient lighting';
-    const camera = l.camera_motion || 'Static handheld with subtle micro shake';
-    const rules = l.engine_safety_rules || 'stable lighting across frames';
+    const camera = l.camera_motion || 'Smooth eye-level handheld glide pacing alongside subject';
+    const rules = l.engine_safety_rules || 'strict single-perspective lock, no 180-degree turns, stable lighting across frames';
+    const ref = (activeReference === 'back') ? 'BACK / REAR PERSPECTIVE ONLY' : 'FRONTAL / THREE-QUARTER PERSPECTIVE ONLY';
 
     return `${HYPER_REALISM_VIDEO_BASE}
 
 SUBJECT:
 ${subject}
 
-ACTION:
+ACTION & KINETIC DYNAMICS:
 ${movement}
 
-PRODUCT:
+PRODUCT & FABRIC PHYSICS:
 ${product}
 
-LIGHTING & SCENE:
+LIGHTING & SCENE ATMOSPHERE:
 ${scene}
 
-CAMERA:
+CAMERA MOTION & FRAMING:
 ${camera}
 
 VISUAL TEXTURE & CAMERA ARTIFACTS:
 - Artifacts: ${videoArtifacts}
 - Camera Dynamics: ${isCinematic ? "Smooth cinematic stabilization and subtle glide" : "Natural handheld micro-shake with authentic amateur POV feel"}
 
-ENGINE SAFETY RULES:
-- One main action per shot
-- Movement must be minimal and slow
-- Keep lighting consistent; no flicker
+PERSPECTIVE LOCK & ENGINE SAFETY RULES:
+- Active Angle: ${ref}
+- Strict single-perspective consistency with initial frame.
+- NO 180-degree or 360-degree body turns; never expose unreferenced garment sides.
+- Pacing: Organic 4-5 second realistic temporal dynamics (cadence, fabric drape, gravity response).
+- Keep lighting and color grading strictly consistent across all frames; no flicker.
 - ${rules}
 
 NEGATIVE PROMPT:
 ${VIDEO_NEGATIVE_PROMPT}`.trim();
 };
 
-const processConcept = (concept: any, options: GenerationOptions, videoArtifacts?: string, locationDesc?: string, chaosLevel: number = 3): UGCConcept => {
+export const sanitizeHashtags = (raw: any): string[] => {
+    if (!raw) return [];
+    let tags: string[] = [];
+    if (Array.isArray(raw)) {
+        tags = raw.flatMap(t => typeof t === 'string' ? t.split(/[\s,]+/) : []);
+    } else if (typeof raw === 'string') {
+        tags = raw.split(/[\s,]+/);
+    }
+    return tags
+        .map(t => String(t).trim().replace(/^#+/, ''))
+        .filter(t => t.length > 0);
+};
+
+export const processConcept = (concept: any, options: GenerationOptions, videoArtifacts?: string, locationDesc?: string, chaosLevel: number = 3): UGCConcept => {
   if (!concept || !Array.isArray(concept.scenes)) {
-      return concept || { title: "", strategy: "", viralCaption: "", hashtags: [], scenes: [] };
+      return concept ? { ...concept, hashtags: sanitizeHashtags(concept.hashtags) } : { title: "", strategy: "", viralCaption: "", hashtags: [], scenes: [] };
   }
 
   const processedScenes = concept.scenes.map((scene: any) => {
@@ -239,11 +271,11 @@ const processConcept = (concept: any, options: GenerationOptions, videoArtifacts
     }
 
     const compiledImagePrompt = assembleImagePrompt(visualLogic, scene.description || scene.title);
-    
+
     // Dynamically resolve camera motion per scene if not provided by Gemini, or use Gemini's if valid
     let sceneCamera = videoLogic?.camera_motion;
     let isCinematic = false;
-    
+
     if (!sceneCamera || sceneCamera.trim() === "") {
         const resolved = resolveCameraMotion(locationDesc || videoLogic?.scene_atmosphere || scene.description || "", chaosLevel);
         sceneCamera = resolved.label;
@@ -253,18 +285,23 @@ const processConcept = (concept: any, options: GenerationOptions, videoArtifacts
     }
 
     const artifacts = videoArtifacts || "Slight motion blur";
-    const compiledVideoPrompt = assembleVideoPrompt(videoLogic, artifacts, isCinematic, scene.description || scene.title);
+    const activeRef = scene.active_reference || 'front';
+    const compiledVideoPrompt = assembleVideoPrompt(videoLogic, artifacts, isCinematic, scene.description || scene.title, activeRef);
 
-    const newScene = { 
+    const newScene = {
         ...scene,
         imageEditPrompt: compiledImagePrompt,
         videoGenPrompt: compiledVideoPrompt
-    }; 
+    };
     delete newScene.visual_logic;
     delete newScene.video_logic;
     return newScene;
   });
-  return { ...concept, scenes: processedScenes };
+  return {
+      ...concept,
+      hashtags: sanitizeHashtags(concept.hashtags),
+      scenes: processedScenes
+  };
 };
 
 export interface AiSettings {
@@ -300,20 +337,23 @@ let globalModelIndex = 0;
 
 // All verified Google AI Studio models supporting multimodal vision + structured JSON output
 const GOOGLE_STUDIO_MODELS = [
+    'gemini-3.5-flash-lite',
+    'gemini-flash-lite-latest',
+    'gemini-3.1-flash-lite',
+    'gemini-3.1-flash-lite-preview',
+    'gemini-3.5-flash',
+    'gemini-3.6-flash',
+    'gemini-3.7-flash',
     'gemini-3.8-flash',
     'gemini-flash-latest',
-    'gemini-3.7-flash',
-    'gemini-3.5-flash',
-    'gemini-3.1-flash-lite',
-    'gemini-2.5-flash',
-    'gemini-2.5-pro',
-    'gemini-2.0-flash',
-    'gemini-pro-latest'
+    'gemini-3-flash-preview',
+    'gemini-2.5-pro'
 ];
 
 const PROXY_ROUTER_MODELS = [
-    'ag/gemini-3.7-flash-medium',
+    'ag/gemini-3.8-flash-high',
     'ag/gemini-3.8-flash-medium',
+    'ag/gemini-3.7-flash-medium',
     'ag/gemini-3.8-flash',
     'ag/gemini-pro-agent'
 ];
@@ -344,11 +384,13 @@ export const executeWithKeyPool = async <T>(
     // Determine candidate models with automatic rotation & failover
     let candidateModels: string[] = [];
     if (options?.isImageGeneration) {
-        const imageModels = ['imagen-3.0-generate-002', 'gemini-3.1-flash-image', 'gemini-2.5-flash-image', 'gemini-2.5-flash'];
+        const imageModels = ['imagen-3.0-generate-002', 'gemini-3.1-flash-image', 'gemini-3.1-flash-image-preview', 'gemini-3-pro-image-preview'];
         const startImgIdx = globalModelIndex % imageModels.length;
         candidateModels = [...imageModels.slice(startImgIdx), ...imageModels.slice(0, startImgIdx)];
     } else if (options?.isAudioGeneration) {
-        const audioModels = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview', 'gemini-2.5-flash-preview-tts', 'gemini-2.0-flash'];
+        const audioModels = effectiveBaseUrl
+            ? ['ag/gemini-3.8-flash-tts', 'gemini-3.8-flash-tts', 'gemini-2.5-flash-preview-tts']
+            : ['gemini-3.8-flash-tts', 'gemini-3.8-flash-lite-tts', 'gemini-2.5-flash-preview-tts', 'gemini-3.1-flash-tts-preview'];
         const startAudIdx = globalModelIndex % audioModels.length;
         candidateModels = [...audioModels.slice(startAudIdx), ...audioModels.slice(0, startAudIdx)];
     } else {
@@ -718,17 +760,6 @@ export const generateOutfitConcepts = async (
             consistencyGuide = coreLook.label;
         }
 
-        const VIDEO_TRAINING_RULES = `
-        >>> VIDEO GENERATION TRAINING RULES <<<
-        - One main action per shot (do NOT stack many actions).
-        - Movement must be minimal and slow (e.g., subtle breathing, slow blinking).
-        - Keep camera movement simple: either (A) static + zoom OR (B) tracking only OR (C) tracking + tiny zoom.
-        - Avoid pan/tilt while zooming.
-        - Keep zoom low: Smooth zoom (3-5% over 4s), Snap zoom (max 8% in 0.3s), Breath zoom (1-2% in/out).
-        - Narrow depth of field allowed, but no focus hunting.
-        - CRITICAL RULE: DO NOT write camera motions that rotate around the subject (no 180 or 360-degree spins). The AI Video model only has ONE starting frame. If you want to show the back of the shirt, create a COMPLETELY SEPARATE SCENE where the starting frame is already showing the back.
-        `;
-
         const voicePersona = getVoicePersonaPrompt(narrationStyle);
 
         const outfitRule = isProductOnly ? `
@@ -745,9 +776,11 @@ export const generateOutfitConcepts = async (
         if (backImage) {
             parts.push({ inlineData: { mimeType: backImage.mimeType, data: backImage.base64 } });
             backImageContext = `
-            - PENTING: Anda menerima 2 gambar referensi. Gambar pertama adalah tampak DEPAN, gambar kedua adalah tampak BELAKANG.
-            - Buatlah scene yang memamerkan kedua sisi produk secara logis.
-            - Gunakan kolom 'active_reference' untuk menentukan sisi mana yang sedang difokuskan di setiap scene ('front' atau 'back').
+            - PENTING (DUAL IMAGE REFERENCE): Anda menerima 2 gambar referensi. Gambar pertama adalah tampak DEPAN ('front'), gambar kedua adalah tampak BELAKANG ('back').
+            - Buatlah variasi scene yang menampilkan kedua sisi produk secara logis dan proporsional.
+            - ATURAN MUTLAK PERSPECTIVE LOCK:
+              * Isi kolom 'active_reference' dengan 'front' (jika scene menyorot sisi depan) ATAU 'back' (jika scene menyorot sisi belakang).
+              * Setiap scene HANYA berfokus pada 1 sudut pandang sesuai active_reference. DILARANG memutar kamera 180°/360° atau menampilkan sisi yang tidak ada di foto referensi frame awal!
             `;
         }
 
@@ -782,7 +815,7 @@ export const generateOutfitConcepts = async (
             - lighting_atmosphere: Specific lighting and atmosphere in English.
             - camera_angle: Specific camera angle in English.
           * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas:
-            - subject_movement: Micro-movements in English.
+            - subject_movement: Fluid, natural human kinetic motion with realistic fabric drape in English (strictly matching active_reference angle).
             - scene_atmosphere: Lighting and mood in English.
             - micro_story: Short emotional context in English.
             - camera_motion: Specific mathematical camera movement in English.
@@ -807,7 +840,7 @@ export const generateOutfitConcepts = async (
            - visual_logic dan video_logic: **ENGLISH**.
         3. **Visual Consistency**: ALWAYS USE THE LOCKED VISUALS ABOVE. DO NOT change location, lighting, or model style.
         4. **Realism**: Prompt must mention 'iPhone 15 Pro Max', 'Noise', 'Unedited'.
-        5. **Hashtags**: Provide EXACTLY 5 relevant hashtags per concept.
+        5. **Hashtags**: Provide EXACTLY 5 relevant hashtags per concept WITHOUT the '#' symbol (e.g. ["ootd", "outfitinspo", "tiktokfashion", "style", "racuntiktok"]).
         
         OUTPUT FORMAT (STRICT RAW JSON ONLY):
         {
@@ -833,7 +866,7 @@ export const generateOutfitConcepts = async (
                     "camera_angle": "Camera angle in English"
                   },
                   "video_logic": {
-                    "subject_movement": "Micro-movements in English",
+                    "subject_movement": "Natural kinetic motion with fabric drape in English",
                     "scene_atmosphere": "Scene atmosphere in English",
                     "micro_story": "Short emotional context in English",
                     "camera_motion": "Camera motion in English",
@@ -953,8 +986,9 @@ export const regenerateSingleConcept = async (
                * Tulis 'narration': Naskah narasi/voiceover singkat & natural (Bahasa Indonesia).
                * Tulis 'voice_direction': Arahan intonasi dan gaya vokal membaca narasi.
                * Isi 'visual_logic' (in ENGLISH) dengan breakdown visual terkunci di atas.
-               * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas.
-             
+               * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas:
+                 - subject_movement: Fluid natural product interaction and motion in English.
+
              CRITICAL PRODUCT RULE:
              The user's PRODUCT is the absolute priority. Focus entirely on the texture, details, and material of the product. The product should be held, touched, or placed in the scene. DO NOT put the product on a human body. DO NOT describe a person wearing the product.
 
@@ -963,12 +997,7 @@ export const regenerateSingleConcept = async (
              - Tulis naskah narasi yang SANGAT SESUAI dengan gaya di atas.
              - Isi kolom 'voice_direction' dengan instruksi cara membaca (misal: "Nada tinggi, cepat", "Berbisik pelan").
 
-             >>> VIDEO GENERATION TRAINING RULES <<<
-             - One main action per shot.
-             - Movement must be minimal and slow.
-             - Keep camera movement simple (static+zoom, tracking only).
-             - Keep zoom low (3-5% smooth, max 8% snap).
-             - CRITICAL RULE: DO NOT write camera motions that rotate around the subject (no 180 or 360-degree spins). The AI Video model only has ONE starting frame. If you want to show the back of the shirt, create a COMPLETELY SEPARATE SCENE where the starting frame is already showing the back.
+             ${VIDEO_TRAINING_RULES}
              `;
         } else if (isFacelessBody) {
              const styleKey = mapModelToStyleKey(modelType);
@@ -1006,7 +1035,8 @@ export const regenerateSingleConcept = async (
                * Tulis 'narration': Naskah narasi/voiceover singkat & natural (Bahasa Indonesia).
                * Tulis 'voice_direction': Arahan intonasi dan gaya vokal membaca narasi.
                * Isi 'visual_logic' (in ENGLISH) dengan breakdown visual terkunci di atas.
-               * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas.
+               * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas:
+                 - subject_movement: Fluid, natural human kinetic motion with realistic fabric drape in English (strictly matching active_reference angle).
 
              CRITICAL OUTFIT RULE:
              The user's PRODUCT is the absolute priority. If the product is a piece of clothing, the model MUST wear it as their primary outfit. If the 'New Random Variation' suggests a conflicting outfit, you MUST adapt it. Do NOT cover the product. Instead, turn the conflicting item into an accessory (e.g., tied around the waist, draped over the shoulder, held in hand, or worn open/unbuttoned).
@@ -1016,17 +1046,12 @@ export const regenerateSingleConcept = async (
              - Tulis naskah narasi yang SANGAT SESUAI dengan gaya di atas.
              - Isi kolom 'voice_direction' dengan instruksi cara membaca (misal: "Nada tinggi, cepat", "Berbisik pelan").
 
-             >>> VIDEO GENERATION TRAINING RULES <<<
-             - One main action per shot.
-             - Movement must be minimal and slow.
-             - Keep camera movement simple (static+zoom, tracking only).
-             - Keep zoom low (3-5% smooth, max 8% snap).
-             - CRITICAL RULE: DO NOT write camera motions that rotate around the subject (no 180 or 360-degree spins). The AI Video model only has ONE starting frame. If you want to show the back of the shirt, create a COMPLETELY SEPARATE SCENE where the starting frame is already showing the back.
+             ${VIDEO_TRAINING_RULES}
              `;
         } else {
              const styleKey = mapModelToStyleKey(modelType);
              const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['TIKTOK_GIRL'];
-             
+
              const selectedStyle = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
              const selectedLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
              const selectedActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
@@ -1036,7 +1061,7 @@ export const regenerateSingleConcept = async (
              specificPrompt = `
              MODE: Human Realism Regeneration.
              BASE MODEL: ${modelType}
-             
+
              >>> STRICT VISUAL LOCK (FROM SYSTEM) <<<
              YOU MUST USE THESE EXACT VISUALS FOR ALL SCENES (DO NOT INVENT NEW ONES):
              - Look: ${selectedStyle.label}
@@ -1047,7 +1072,7 @@ export const regenerateSingleConcept = async (
              - Camera Angle: ${coreCameraAngle.label}
              - Video Artifact: ${videoArtifacts.label}
              - Camera: Choose a suitable camera motion for each scene.
-             
+
              >>> YOUR JOB (COPYWRITING, SCENE BREAKDOWN & STRATEGY) <<<
              - Tulis 'title': Judul konsep yang singkat, catchy, dan relevan (Bahasa Indonesia).
              - Tulis 'strategy': PENJELASAN SINGKAT per konsep (Bahasa Indonesia, 1-2 kalimat padat menjelaskan angle marketing).
@@ -1058,7 +1083,8 @@ export const regenerateSingleConcept = async (
                * Tulis 'narration': Naskah narasi/voiceover singkat & natural (Bahasa Indonesia).
                * Tulis 'voice_direction': Arahan intonasi dan gaya vokal membaca narasi.
                * Isi 'visual_logic' (in ENGLISH) dengan breakdown visual terkunci di atas.
-               * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas.
+               * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas:
+                 - subject_movement: Fluid, natural human kinetic motion with realistic fabric drape in English (strictly matching active_reference angle).
 
              CRITICAL OUTFIT RULE:
              The user's PRODUCT is the absolute priority. If the product is a piece of clothing, the model MUST wear it as their primary outfit. If the 'New Random Variation' suggests a conflicting outfit, you MUST adapt it. Do NOT cover the product. Instead, turn the conflicting item into an accessory (e.g., tied around the waist, draped over the shoulder, held in hand, or worn open/unbuttoned).
@@ -1068,12 +1094,7 @@ export const regenerateSingleConcept = async (
              - Tulis naskah narasi yang SANGAT SESUAI dengan gaya di atas.
              - Isi kolom 'voice_direction' dengan instruksi cara membaca (misal: "Nada tinggi, cepat", "Berbisik pelan").
 
-             >>> VIDEO GENERATION TRAINING RULES <<<
-             - One main action per shot.
-             - Movement must be minimal and slow.
-             - Keep camera movement simple (static+zoom, tracking only).
-             - Keep zoom low (3-5% smooth, max 8% snap).
-             - CRITICAL RULE: DO NOT write camera motions that rotate around the subject (no 180 or 360-degree spins). The AI Video model only has ONE starting frame. If you want to show the back of the shirt, create a COMPLETELY SEPARATE SCENE where the starting frame is already showing the back.
+             ${VIDEO_TRAINING_RULES}
              `;
         }
     } else {
@@ -1088,9 +1109,11 @@ export const regenerateSingleConcept = async (
     if (backImage) {
         parts.push({ inlineData: { mimeType: backImage.mimeType, data: backImage.base64 } });
         backImageContext = `
-        - PENTING: Anda menerima 2 gambar referensi. Gambar pertama adalah tampak DEPAN, gambar kedua adalah tampak BELAKANG.
-        - Buatlah scene yang memamerkan kedua sisi produk secara logis.
-        - Gunakan kolom 'active_reference' untuk menentukan sisi mana yang sedang difokuskan di setiap scene ('front' atau 'back').
+        - PENTING (DUAL IMAGE REFERENCE): Anda menerima 2 gambar referensi. Gambar pertama adalah tampak DEPAN ('front'), gambar kedua adalah tampak BELAKANG ('back').
+        - Buatlah variasi scene yang menampilkan kedua sisi produk secara logis dan proporsional.
+        - ATURAN MUTLAK PERSPECTIVE LOCK:
+          * Isi kolom 'active_reference' dengan 'front' (jika scene menyorot sisi depan) ATAU 'back' (jika scene menyorot sisi belakang).
+          * Setiap scene HANYA berfokus pada 1 sudut pandang sesuai active_reference. DILARANG memutar kamera 180°/360° atau menampilkan sisi yang tidak ada di foto referensi frame awal!
         `;
     }
 
@@ -1102,7 +1125,7 @@ export const regenerateSingleConcept = async (
           ${backImageContext}
           ${specificPrompt}
           ${negativePrompt}
-          Provide EXACTLY 5 relevant hashtags.
+          Provide EXACTLY 5 relevant hashtags WITHOUT the '#' symbol (e.g. ["ootd", "outfitinspo", "tiktokfashion", "style", "racuntiktok"]).
 
           OUTPUT FORMAT (STRICT RAW JSON ONLY):
           {
@@ -1126,7 +1149,7 @@ export const regenerateSingleConcept = async (
                   "camera_angle": "Camera angle in English"
                 },
                 "video_logic": {
-                  "subject_movement": "Micro-movements in English",
+                  "subject_movement": "Fluid human kinetic movement in English with fabric drape and perspective lock",
                   "scene_atmosphere": "Scene atmosphere in English",
                   "micro_story": "Short emotional context in English",
                   "camera_motion": "Camera motion in English",
