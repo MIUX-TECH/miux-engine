@@ -121,15 +121,16 @@ const conceptProperties = {
 
 const fullResponseSchema: Schema = {
   type: Type.OBJECT,
-  properties: { 
-      concepts: { 
-          type: Type.ARRAY, 
-          items: { 
-              type: Type.OBJECT, 
+  properties: {
+      concepts: {
+          type: Type.ARRAY,
+          description: "List of EXACTLY 3 unique video concepts. Must contain exactly 3 concept items.",
+          items: {
+              type: Type.OBJECT,
               properties: conceptProperties,
               required: ["title", "strategy", "viralCaption", "hashtags", "scenes"]
-          } 
-      } 
+          }
+      }
   },
   required: ["concepts"]
 };
@@ -637,128 +638,112 @@ export const generateOutfitConcepts = async (
         const isFacelessBody = lowerType.includes('faceless') || lowerType.includes('body only');
 
         let coreStyle = "";
-        let overlayChaos = "";
-        let consistencyGuide = "";
         let negativePrompt = RAW_NEGATIVE_PROMPT;
-        let selectedLocationDesc = "";
-        
+        if (isProductOnly) {
+            coreStyle = `FOCUS: PRODUCT DETAILS & HANDS ONLY. NO FACES. NO FULL BODY.`;
+            negativePrompt += ` face, head, eyes, mouth, human body, full body, cinematic, studio lighting, perfect composition.`;
+        } else if (isFacelessBody) {
+            coreStyle = `TARGET FRAMING: FACELESS / BODY ONLY. The model MUST WEAR the product. Keep camera framed neck-down, chin cropped out, or headless torso angle. Focus on outfit drape, silhouette, and fabric motion.`;
+            negativePrompt += ` face, head, eyes, mouth, smiling face, portrait, headshot.`;
+        } else {
+            coreStyle = `TARGET MODEL BASE: "${modelType}"`;
+        }
+
         // Video specific chaos (capped at level 3 for safety)
         const videoChaosLevel = Math.min(chaosLevel, 3);
-        const videoArtifacts = pickWeightedRandom(POOL_VIDEO_ARTIFACTS, videoChaosLevel);
-        const coreCameraAngle = pickWeightedRandom(POOL_CAMERA_ANGLE, chaosLevel, true, recentPicks);
 
-        if (isProductOnly) {
-            // === MODE A: PRODUCT/HANDS ONLY (NO HUMAN BODY) ===
-            const coreHand = pickWeightedRandom(getHandPoolForModel(modelType || ""), chaosLevel, true, recentPicks);
-            const coreActivity = pickWeightedRandom(POOL_HAND_ACTIVITY, chaosLevel, true, recentPicks);
-            const coreLocation = pickWeightedRandom(POOL_HAND_LOCATION, chaosLevel, true, recentPicks);
-            selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
-            
-            // Overlay Logic based on Chaos Level
-            let overlayImperfections: string[] = [];
+        interface ConceptEntropy {
+            conceptNum: number;
+            videoArtifacts: { label: string };
+            coreCameraAngle: { label: string };
+            selectedLocationDesc: string;
+            promptBlock: string;
+        }
 
-            // Chaos Slider Logic for Imperfections
-            if (chaosLevel >= 3) overlayImperfections.push(pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks).label);
-            if (chaosLevel >= 4) overlayImperfections.push(pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks).label);
-            if (chaosLevel === 5) {
-                overlayImperfections.push(pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks).label);
-                coreStyle += " EXTREME TEXTURE. NO AI SMOOTHING.";
-            }
+        const sampleConceptEntropy = (conceptNum: number): ConceptEntropy => {
+            const videoArtifacts = pickWeightedRandom(POOL_VIDEO_ARTIFACTS, videoChaosLevel);
+            const coreCameraAngle = pickWeightedRandom(POOL_CAMERA_ANGLE, chaosLevel, true, recentPicks);
 
-            coreStyle = `FOCUS: PRODUCT DETAILS & HANDS ONLY. NO FACES. NO FULL BODY.`;
-            overlayChaos = `
-            >>> HANDS CORE STRUCTURE <<<
+            if (isProductOnly) {
+                const coreHand = pickWeightedRandom(getHandPoolForModel(modelType || ""), chaosLevel, true, recentPicks);
+                const coreActivity = pickWeightedRandom(POOL_HAND_ACTIVITY, chaosLevel, true, recentPicks);
+                const coreLocation = pickWeightedRandom(POOL_HAND_LOCATION, chaosLevel, true, recentPicks);
+                const selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
+
+                const overlayImperfections: string[] = [];
+                if (chaosLevel >= 3) overlayImperfections.push(pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks).label);
+                if (chaosLevel >= 4) overlayImperfections.push(pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks).label);
+                if (chaosLevel === 5) overlayImperfections.push(pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks).label);
+
+                const promptBlock = `
+            >>> KONSEP ${conceptNum} VISUAL LOCK (POOL KHUSUS KONSEP ${conceptNum}) <<<
             - Hand Detail: ${coreHand.label}
             - Location & Environment: ${coreLocation.name} (${coreLocation.desc})
             - Lighting: ${coreLocation.lighting || 'Natural Ambient Light'}
             - Activity: ${coreActivity.label}
             - Camera Angle: ${coreCameraAngle.label}
-            
-            >>> CHAOS OVERLAY (Intensity ${chaosLevel}) <<<
             - Imperfections: ${overlayImperfections.length > 0 ? overlayImperfections.join(" + ") : "None (Clean)"}
-            
-            >>> VIDEO MOTION (Intensity ${chaosLevel}) <<<
-            - Artifacts: ${videoArtifacts.label}
-            - Camera: Gemini MUST choose a suitable camera motion for EACH scene.
+            - Video Motion Artifact: ${videoArtifacts.label}
             `;
-            
-            consistencyGuide = `Hand details (${coreHand.label}) in ${coreLocation.name}`;
-            negativePrompt += ` face, head, eyes, mouth, human body, full body, cinematic, studio lighting, perfect composition.`;
+                return { conceptNum, videoArtifacts, coreCameraAngle, selectedLocationDesc, promptBlock };
+            } else if (isFacelessBody) {
+                const styleKey = mapModelToStyleKey(modelType);
+                const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['FACELESS_BODY'];
+                const coreFraming = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
+                const coreLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
+                const coreActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
+                const selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
 
-        } else if (isFacelessBody) {
-            // === MODE B-1: FACELESS / BODY ONLY (MODEL WEARS PRODUCT, HEADLESS CROPPING) ===
-            const styleKey = mapModelToStyleKey(modelType);
-            const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['FACELESS_BODY'];
-            const coreFraming = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
-            const coreLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
-            const coreActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
-            selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
+                const overlayImperfections: string[] = [];
+                if (chaosLevel >= 2) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
+                if (chaosLevel >= 4) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
+                if (chaosLevel === 5) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
 
-            let overlayImperfections: string[] = [];
-            if (chaosLevel >= 2) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
-            if (chaosLevel >= 4) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
-            if (chaosLevel === 5) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
-
-            coreStyle = `TARGET FRAMING: FACELESS / BODY ONLY. The model MUST WEAR the product. Keep camera framed neck-down, chin cropped out, or headless torso angle. Focus on outfit drape, silhouette, and fabric motion.`;
-            
-            overlayChaos = `
-            >>> BODY & FRAMING STRUCTURE <<<
-            1. FRAMING & SILHOUETTE: ${coreFraming.label}
-            2. LOCATION & ENVIRONMENT: ${coreLocation.name} (${coreLocation.desc})
-            3. LIGHTING: ${coreLocation.lighting || 'Natural Ambient Light'}
-            4. ACTIVITY: ${coreActivity.label}
-            5. VIBE: ${coreLocation.vibe}
-            6. CAMERA ANGLE: ${coreCameraAngle.label}
-
-            >>> CHAOS OVERLAY (Intensity ${chaosLevel}) <<<
+                const promptBlock = `
+            >>> KONSEP ${conceptNum} VISUAL LOCK (POOL KHUSUS KONSEP ${conceptNum}) <<<
+            - Framing & Silhouette: ${coreFraming.label}
+            - Location & Environment: ${coreLocation.name} (${coreLocation.desc})
+            - Lighting: ${coreLocation.lighting || 'Natural Ambient Light'}
+            - Activity: ${coreActivity.label}
+            - Vibe: ${coreLocation.vibe}
+            - Camera Angle: ${coreCameraAngle.label}
             - Imperfections: ${overlayImperfections.length > 0 ? overlayImperfections.join(" + ") : "Clean (Level 1)"}
-            
-            >>> VIDEO MOTION (Intensity ${chaosLevel}) <<<
-            - Artifacts: ${videoArtifacts.label}
-            - Camera: Gemini MUST choose a suitable camera motion for EACH scene.
+            - Video Motion Artifact: ${videoArtifacts.label}
             `;
+                return { conceptNum, videoArtifacts, coreCameraAngle, selectedLocationDesc, promptBlock };
+            } else {
+                const styleKey = mapModelToStyleKey(modelType);
+                const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['TIKTOK_GIRL'];
+                const coreLook = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
+                const coreLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
+                const coreActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
+                const selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
 
-            consistencyGuide = coreFraming.label;
-            negativePrompt += ` face, head, eyes, mouth, smiling face, portrait, headshot.`;
+                const overlayImperfections: string[] = [];
+                if (chaosLevel >= 2) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
+                if (chaosLevel >= 4) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
+                if (chaosLevel === 5) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
 
-        } else {
-            // === MODE B-2: HUMAN MODEL (FULL BODY / TALENT WITH FACE) ===
-            const styleKey = mapModelToStyleKey(modelType);
-            const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['TIKTOK_GIRL'];
-            
-            // Core Selection
-            const coreLook = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
-            const coreLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
-            const coreActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
-            selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
-
-            // Overlay Logic
-            let overlayImperfections: string[] = [];
-            if (chaosLevel >= 2) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
-            if (chaosLevel >= 4) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
-            if (chaosLevel === 5) overlayImperfections.push(pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks).label);
-
-            coreStyle = `TARGET MODEL BASE: "${modelType}"`;
-            
-            overlayChaos = `
-            >>> HUMAN CORE STRUCTURE <<<
-            1. LOOK: ${coreLook.label}
-            2. LOCATION & ENVIRONMENT: ${coreLocation.name} (${coreLocation.desc})
-            3. LIGHTING: ${coreLocation.lighting || 'Natural Ambient Light'}
-            4. ACTIVITY: ${coreActivity.label}
-            5. VIBE: ${coreLocation.vibe}
-            6. CAMERA ANGLE: ${coreCameraAngle.label}
-
-            >>> CHAOS OVERLAY (Intensity ${chaosLevel}) <<<
+                const promptBlock = `
+            >>> KONSEP ${conceptNum} VISUAL LOCK (POOL KHUSUS KONSEP ${conceptNum}) <<<
+            - Look & Aesthetic: ${coreLook.label}
+            - Location & Environment: ${coreLocation.name} (${coreLocation.desc})
+            - Lighting: ${coreLocation.lighting || 'Natural Ambient Light'}
+            - Activity: ${coreActivity.label}
+            - Vibe: ${coreLocation.vibe}
+            - Camera Angle: ${coreCameraAngle.label}
             - Imperfections: ${overlayImperfections.length > 0 ? overlayImperfections.join(" + ") : "Clean (Level 1)"}
-            
-            >>> VIDEO MOTION (Intensity ${chaosLevel}) <<<
-            - Artifacts: ${videoArtifacts.label}
-            - Camera: Gemini MUST choose a suitable camera motion for EACH scene.
+            - Video Motion Artifact: ${videoArtifacts.label}
             `;
+                return { conceptNum, videoArtifacts, coreCameraAngle, selectedLocationDesc, promptBlock };
+            }
+        };
 
-            consistencyGuide = coreLook.label;
-        }
+        const conceptEntropies = [
+            sampleConceptEntropy(1),
+            sampleConceptEntropy(2),
+            sampleConceptEntropy(3),
+        ];
 
         const voicePersona = getVoicePersonaPrompt(narrationStyle);
 
@@ -786,14 +771,16 @@ export const generateOutfitConcepts = async (
 
         const promptText = `
         ROLE: Viral TikTok Visual Director (Specialist in 'Ugly-Chic' & Flash Photography).
-        TASK: Create 3 Video Concepts based on the uploaded image(s).
+        TASK: Create EXACTLY 3 distinct Video Concepts (each having ${sceneCount} scenes) based on the uploaded image(s). All 3 concepts must be included in the "concepts" array.
         ${backImageContext}
-        
-        >>> STRICT VISUAL LOCK (FROM SYSTEM) <<<
-        YOU MUST USE THESE EXACT VISUALS FOR ALL SCENES (DO NOT INVENT NEW ONES):
+
         ${coreStyle}
-        ${overlayChaos}
-        
+
+        >>> STRICT DISTINCT VISUAL & POOL LOCKS (EACH CONCEPT MUST USE ITS ASSIGNED POOL) <<<
+        PENTING: Setiap konsep (1, 2, 3) HARUS menggunakan pool visual, lokasi, aktivitas, dan vibe yang BERBEDA sesuai pembagian di bawah ini. JANGAN mencampuradukkan lokasi antar konsep!
+
+        ${conceptEntropies.map(c => c.promptBlock).join("\n")}
+
         CRITICAL VISUAL INSTRUCTIONS:
         - Hair and makeup should match the requested vibe (can be messy or neat, but must look real).
         - Eyes must be sharp but natural.
@@ -808,15 +795,15 @@ export const generateOutfitConcepts = async (
           * Tulis 'textOverlay': Teks hook ringkas di layar (Bahasa Indonesia).
           * Tulis 'narration': Naskah narasi/voiceover singkat & natural (Bahasa Indonesia).
           * Tulis 'voice_direction': Arahan intonasi dan gaya vokal membaca narasi.
-          * Isi 'visual_logic' (in ENGLISH) dengan breakdown visual terkunci di atas:
-            - subject_desc: Full visual subject description in English matching the locked look.
-            - action_pose: Exact action in English.
+          * Isi 'visual_logic' (in ENGLISH) dengan breakdown visual terkunci sesuai pool konsepnya masing-masing:
+            - subject_desc: Full visual subject description in English matching the assigned concept's look/talent.
+            - action_pose: Exact action in English matching the assigned concept's activity.
             - product_placement: Where and how the product is shown in English.
-            - lighting_atmosphere: Specific lighting and atmosphere in English.
-            - camera_angle: Specific camera angle in English.
+            - lighting_atmosphere: Specific lighting and atmosphere in English matching the assigned concept's location.
+            - camera_angle: Specific camera angle in English matching the assigned concept's camera angle.
           * Isi 'video_logic' (in ENGLISH) dengan breakdown motion terkunci di atas:
             - subject_movement: Fluid, natural human kinetic motion with realistic fabric drape in English (strictly matching active_reference angle).
-            - scene_atmosphere: Lighting and mood in English.
+            - scene_atmosphere: Environmental motion matching the assigned concept's location in English.
             - micro_story: Short emotional context in English.
             - camera_motion: Specific mathematical camera movement in English.
             - product_placement: How product remains stable and sharp in English.
@@ -834,21 +821,89 @@ export const generateOutfitConcepts = async (
         ${negativePrompt}
 
         OUTPUT RULES:
-        1. **Scene Count**: Exactly ${sceneCount} scenes per concept.
-        2. **Language Rules**:
+        1. **Concept Count (CRITICAL)**: You MUST ALWAYS generate EXACTLY 3 unique video concepts (Concept 1, Concept 2, and Concept 3) in the "concepts" array. NEVER return only 1 or 2 concepts. The "concepts" array length MUST BE EXACTLY 3.
+        2. **Distinct Pools Per Concept (CRITICAL)**:
+           - All scenes in Concept 1 MUST strictly follow KONSEP 1 VISUAL LOCK (Location 1, Activity 1, Camera Angle 1).
+           - All scenes in Concept 2 MUST strictly follow KONSEP 2 VISUAL LOCK (Location 2, Activity 2, Camera Angle 2 - DIFFERENT pool from Concept 1).
+           - All scenes in Concept 3 MUST strictly follow KONSEP 3 VISUAL LOCK (Location 3, Activity 3, Camera Angle 3 - DIFFERENT pool from Concept 1 & 2).
+           - Within each concept, the location and visual vibe must remain consistent across its ${sceneCount} scenes.
+        3. **Scene Count**: Exactly ${sceneCount} scenes per concept.
+        4. **Language Rules**:
            - Judul konsep, strategi (penjelasan singkat konsep 1-2 kalimat), deskripsi scene (penjelasan singkat visual scene 1-2 kalimat), textOverlay, narasi: **BAHASA INDONESIA**.
            - visual_logic dan video_logic: **ENGLISH**.
-        3. **Visual Consistency**: ALWAYS USE THE LOCKED VISUALS ABOVE. DO NOT change location, lighting, or model style.
-        4. **Realism**: Prompt must mention 'iPhone 15 Pro Max', 'Noise', 'Unedited'.
-        5. **Hashtags**: Provide EXACTLY 5 relevant hashtags per concept WITHOUT the '#' symbol (e.g. ["ootd", "outfitinspo", "tiktokfashion", "style", "racuntiktok"]).
-        
+        5. **Visual Consistency**: ALWAYS USE THE LOCKED VISUALS ABOVE. DO NOT change location within the same concept.
+        6. **Realism**: Prompt must mention 'iPhone 15 Pro Max', 'Noise', 'Unedited'.
+        7. **Hashtags**: Provide EXACTLY 5 relevant hashtags per concept WITHOUT the '#' symbol (e.g. ["ootd", "outfitinspo", "tiktokfashion", "style", "racuntiktok"]).
+
         OUTPUT FORMAT (STRICT RAW JSON ONLY):
         {
           "concepts": [
             {
-              "title": "Judul Konsep Singkat & Menarik (Bahasa Indonesia)",
-              "strategy": "Penjelasan singkat strategi & angle marketing (Bahasa Indonesia, 1-2 kalimat)",
-              "viralCaption": "Caption media sosial yang engaging",
+              "title": "Konsep 1: Judul Konsep Pertama (Bahasa Indonesia)",
+              "strategy": "Penjelasan singkat strategi & angle marketing konsep 1 (Bahasa Indonesia, 1-2 kalimat)",
+              "viralCaption": "Caption media sosial konsep 1 yang engaging",
+              "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+              "scenes": [
+                {
+                  "title": "Judul Scene (Bahasa Indonesia)",
+                  "description": "Penjelasan singkat visual scene (Bahasa Indonesia, 1-2 kalimat)",
+                  "textOverlay": "Teks singkat di layar video",
+                  "narration": "Naskah narasi/voiceover singkat",
+                  "voice_direction": "Instruksi intonasi vokal",
+                  "active_reference": "front",
+                  "visual_logic": {
+                    "subject_desc": "Detailed visual description of subject in English matching the locked look",
+                    "action_pose": "Exact action in English",
+                    "product_placement": "Product placement in English",
+                    "lighting_atmosphere": "Lighting instruction in English",
+                    "camera_angle": "Camera angle in English"
+                  },
+                  "video_logic": {
+                    "subject_movement": "Natural kinetic motion with fabric drape in English",
+                    "scene_atmosphere": "Scene atmosphere in English",
+                    "micro_story": "Short emotional context in English",
+                    "camera_motion": "Camera motion in English",
+                    "product_placement": "Product stability description in English",
+                    "engine_safety_rules": "Safety rules in English"
+                  }
+                }
+              ]
+            },
+            {
+              "title": "Konsep 2: Judul Konsep Kedua (Bahasa Indonesia)",
+              "strategy": "Penjelasan singkat strategi & angle marketing konsep 2 (Bahasa Indonesia, 1-2 kalimat)",
+              "viralCaption": "Caption media sosial konsep 2 yang engaging",
+              "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+              "scenes": [
+                {
+                  "title": "Judul Scene (Bahasa Indonesia)",
+                  "description": "Penjelasan singkat visual scene (Bahasa Indonesia, 1-2 kalimat)",
+                  "textOverlay": "Teks singkat di layar video",
+                  "narration": "Naskah narasi/voiceover singkat",
+                  "voice_direction": "Instruksi intonasi vokal",
+                  "active_reference": "front",
+                  "visual_logic": {
+                    "subject_desc": "Detailed visual description of subject in English matching the locked look",
+                    "action_pose": "Exact action in English",
+                    "product_placement": "Product placement in English",
+                    "lighting_atmosphere": "Lighting instruction in English",
+                    "camera_angle": "Camera angle in English"
+                  },
+                  "video_logic": {
+                    "subject_movement": "Natural kinetic motion with fabric drape in English",
+                    "scene_atmosphere": "Scene atmosphere in English",
+                    "micro_story": "Short emotional context in English",
+                    "camera_motion": "Camera motion in English",
+                    "product_placement": "Product stability description in English",
+                    "engine_safety_rules": "Safety rules in English"
+                  }
+                }
+              ]
+            },
+            {
+              "title": "Konsep 3: Judul Konsep Ketiga (Bahasa Indonesia)",
+              "strategy": "Penjelasan singkat strategi & angle marketing konsep 3 (Bahasa Indonesia, 1-2 kalimat)",
+              "viralCaption": "Caption media sosial konsep 3 yang engaging",
               "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
               "scenes": [
                 {
@@ -912,8 +967,11 @@ export const generateOutfitConcepts = async (
 
         const options: GenerationOptions = { textOverlayMode: 'none', narrationMode: 'none', narrationStyle: narrationStyle, sceneCount };
 
-        // Pass selectedLocationDesc to processConcept for dynamic camera resolution if Gemini fails
-        data.concepts = data.concepts.map(c => processConcept(c, options, videoArtifacts.label, selectedLocationDesc, videoChaosLevel));
+        // Pass each concept's respective selectedLocationDesc and videoArtifacts to processConcept
+        data.concepts = data.concepts.map((c, idx) => {
+            const entropy = conceptEntropies[idx] || conceptEntropies[0];
+            return processConcept(c, options, entropy.videoArtifacts.label, entropy.selectedLocationDesc, videoChaosLevel);
+        });
 
         return data;
 
