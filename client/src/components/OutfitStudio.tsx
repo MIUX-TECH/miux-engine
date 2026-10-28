@@ -165,11 +165,12 @@ const OutfitStudio: React.FC<OutfitStudioProps> = ({ onAnalysisComplete, isLoadi
                                     disabled={isProcessing}
                                     className="w-full bg-black border border-zinc-800 rounded-none px-3 py-3 text-xs text-zinc-300 focus:outline-none focus:border-red-900 transition-all font-mono"
                                 >
-                                    <optgroup label="--- VIRAL ---">
+                                    <optgroup label="--- VIRAL & SUB-KULTUR ---">
                                         <option value="Viral Cute Asian Girl (TikTok Celeb Aesthetic)">Asian Girl (Viral Cut)</option>
                                         <option value="Handsome Korean Guy (Long Wolf Cut Hair, Cool Vibe)">Korean Guy (Wolf Cut)</option>
                                         <option value="Clean Girl Aesthetic (Glowing Skin, Minimalist)">Clean Girl (Minimalist)</option>
                                         <option value="Edgy Y2K Girl (Flash Photography, Cool Attitude)">Edgy Y2K (Flash Photo)</option>
+                                        <option value="Asian Indie Sleaze (Grungy Candid Flash, Messy Rocker)">Asian Indie Sleaze (Rocker Flash)</option>
                                     </optgroup>
                                     <optgroup label="--- LOKAL & URBAN ---">
                                         <option value="Hijab Muslimah Model (Fashion & Daily)">Hijab Muslimah (Fashion & Daily)</option>
