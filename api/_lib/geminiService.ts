@@ -1,11 +1,14 @@
 import { GoogleGenAI, Type, Schema, GenerateContentResponse } from "@google/genai";
 import { AnalysisResponse, GenerationOptions, UGCConcept, ProductData, UploadedImage } from "./types.js";
 import {
-    pickWeightedRandom, 
-    getHandPoolForModel, 
+    pickWeightedRandom,
+    getHandPoolForModel,
     resolveCameraMotion,
-    POOL_HAND_ACTIVITY, 
-    POOL_HAND_LOCATION, 
+    getHandActivityPool,
+    getHumanActivityPool,
+    getCameraAnglePool,
+    POOL_HAND_ACTIVITY,
+    POOL_HAND_LOCATION,
     POOL_HAND_IMPERFECTION,
     HUMAN_STYLE_POOLS,
     POOL_HUMAN_LOCATION,
@@ -13,6 +16,7 @@ import {
     POOL_HUMAN_IMPERFECTION,
     POOL_LIGHTING_STYLES,
     POOL_CAMERA_ANGLE,
+    POOL_CAMERA_ANGLE_FACELESS,
     POOL_VIDEO_ARTIFACTS,
     mapModelToStyleKey
 } from "./entropyEngine.js";
@@ -662,11 +666,11 @@ export const generateOutfitConcepts = async (
 
         const sampleConceptEntropy = (conceptNum: number): ConceptEntropy => {
             const videoArtifacts = pickWeightedRandom(POOL_VIDEO_ARTIFACTS, videoChaosLevel);
-            const coreCameraAngle = pickWeightedRandom(POOL_CAMERA_ANGLE, chaosLevel, true, recentPicks);
+            const coreCameraAngle = pickWeightedRandom(getCameraAnglePool(isFacelessBody), chaosLevel, true, recentPicks);
 
             if (isProductOnly) {
                 const coreHand = pickWeightedRandom(getHandPoolForModel(modelType || ""), chaosLevel, true, recentPicks);
-                const coreActivity = pickWeightedRandom(POOL_HAND_ACTIVITY, chaosLevel, true, recentPicks);
+                const coreActivity = pickWeightedRandom(getHandActivityPool(), chaosLevel, true, recentPicks);
                 const coreLocation = pickWeightedRandom(POOL_HAND_LOCATION, chaosLevel, true, recentPicks);
                 const selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
 
@@ -691,7 +695,7 @@ export const generateOutfitConcepts = async (
                 const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['FACELESS_BODY'];
                 const coreFraming = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
                 const coreLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
-                const coreActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
+                const coreActivity = pickWeightedRandom(getHumanActivityPool(true), chaosLevel, true, recentPicks);
                 const selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
 
                 const overlayImperfections: string[] = [];
@@ -716,7 +720,7 @@ export const generateOutfitConcepts = async (
                 const variations = HUMAN_STYLE_POOLS[styleKey] || HUMAN_STYLE_POOLS['TIKTOK_GIRL'];
                 const coreLook = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
                 const coreLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
-                const coreActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
+                const coreActivity = pickWeightedRandom(getHumanActivityPool(true), chaosLevel, true, recentPicks);
                 const selectedLocationDesc = `${coreLocation.name} ${coreLocation.desc}`;
 
                 const overlayImperfections: string[] = [];
@@ -1004,17 +1008,17 @@ export const regenerateSingleConcept = async (
     
     const videoChaosLevel = Math.min(chaosLevel, 3);
     const videoArtifacts = pickWeightedRandom(POOL_VIDEO_ARTIFACTS, videoChaosLevel);
-    const coreCameraAngle = pickWeightedRandom(POOL_CAMERA_ANGLE, chaosLevel, true, recentPicks);
 
     if (modelType) {
         const lowerType = modelType.toLowerCase();
         const isProductOnly = lowerType.includes('review') || lowerType.includes('hands');
         const isFacelessBody = lowerType.includes('faceless') || lowerType.includes('body only');
+        const coreCameraAngle = pickWeightedRandom(getCameraAnglePool(isFacelessBody), chaosLevel, true, recentPicks);
         const voicePersona = getVoicePersonaPrompt(options.narrationStyle || 'monolog');
 
         if (isProductOnly) {
              const hand = pickWeightedRandom(getHandPoolForModel(modelType || ""), chaosLevel, true, recentPicks);
-             const activity = pickWeightedRandom(POOL_HAND_ACTIVITY, chaosLevel, true, recentPicks);
+             const activity = pickWeightedRandom(getHandActivityPool(), chaosLevel, true, recentPicks);
              const location = pickWeightedRandom(POOL_HAND_LOCATION, chaosLevel, true, recentPicks);
              const flaw = pickWeightedRandom(POOL_HAND_IMPERFECTION, chaosLevel, true, recentPicks);
              selectedLocationDesc = `${location.name} ${location.desc}`;
@@ -1063,7 +1067,7 @@ export const regenerateSingleConcept = async (
              
              const selectedFraming = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
              const selectedLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
-             const selectedActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
+             const selectedActivity = pickWeightedRandom(getHumanActivityPool(true), chaosLevel, true, recentPicks);
              const selectedImperfection = pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks);
              selectedLocationDesc = `${selectedLocation.name} ${selectedLocation.desc}`;
 
@@ -1112,7 +1116,7 @@ export const regenerateSingleConcept = async (
 
              const selectedStyle = pickWeightedRandom(variations, chaosLevel, true, recentPicks);
              const selectedLocation = pickWeightedRandom(POOL_HUMAN_LOCATION, chaosLevel, true, recentPicks);
-             const selectedActivity = pickWeightedRandom(POOL_HUMAN_ACTIVITY, chaosLevel, true, recentPicks);
+             const selectedActivity = pickWeightedRandom(getHumanActivityPool(true), chaosLevel, true, recentPicks);
              const selectedImperfection = pickWeightedRandom(POOL_HUMAN_IMPERFECTION, chaosLevel, true, recentPicks);
              selectedLocationDesc = `${selectedLocation.name} ${selectedLocation.desc}`;
 

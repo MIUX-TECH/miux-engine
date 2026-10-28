@@ -147,71 +147,112 @@ export const getHandPoolForModel = (modelSelection: string) => {
     return POOL_HAND_NEUTRAL;
 };
 
-const RAW_HAND_ACTIVITY = [
-    "Squeezing the product bottle firmly", "Tapping the bottle cap with fingernail",
-    "Unboxing with one hand, struggling slightly", "Holding product up against the sky",
-    "Gripping the package edge tightly", "Tilting product to catch the light texture",
-    "Rubbing product texture on back of hand", "Pointing at the logo with index finger",
-    "Covering the barcode with thumb", "Lifting product slightly from table",
-    "Pushing product forward into camera", "Rotating product slowly to show side",
-    "Scratching the label edge absentmindedly", "Smoothing out the plastic wrapper",
-    "Crushing the empty box after opening", "Holding product submerged in water",
-    "Dipping index finger into product", "Swatching product on inner wrist",
-    "Peeling off the safety seal", "Shaking the bottle vigorously",
-    "Clutching product tightly in fist", "Resting hand casually on top of product",
-    "Flicking the packaging", "Tracing the text on box with finger",
-    "Holding product up to a light source", "Comparing two products side by side",
-    "Catching the light with the bottle curve", "Squeezing tube from the very bottom",
-    "Twisting the cap off in motion", "Pulling the tab open",
-    "Ripping the plastic wrap off", "Poking the product surface (jelly/cream)",
-    "Wiping a smudge off the bottle", "Holding product sideways",
-    "Balancing product on open palm", "Hiding product behind hand then revealing",
-    "Knocking on the container to show solidity", "Spinning the jar on the table",
-    "Sliding product across the surface", "Picking up product from the floor",
-    "Holding product near a window", "Blocking the sun with the product",
-    "Clamping product between two fingers", "Dangling product by the lid",
-    "Pressing the pump dispenser", "Scooping product with finger",
-    "Smearing texture on skin", "Patting product into skin",
-    "Washing product off hand", "Gripping with fingertips only (claw grip)",
-    "Holding product against denim fabric", "Resting product on knee",
-    "Holding product over a balcony ledge", "Aligning product with horizon line",
-    "Holding product in front of a mirror", "Tossing product slightly in air",
-    "Catching product", "Rolling product between palms",
-    "Scratching a lottery ticket style motion", "Drumming fingers on product",
-    "Holding product upside down", "Reading ingredients with finger trace",
-    "Pulling product out of a messy bag", "Holding product against concrete wall",
-    "Holding product over a cup of coffee", "Dipping product into water glass",
-    "Squeezing gel onto fingertip", "Rubbing texture between thumb and index",
-    "Holding product against a neon sign", "Placing product on a receipt",
-    "Holding product with sleeve pulled over hand", "Gently caressing the packaging",
-    "Struggling to open the lid (realistic)", "Holding product in rain",
-    "Holding product in snow/ice", "Burying product in sand",
-    "Holding product against a pet's fur", "Creating a shadow puppet with product",
-    "Holding product against a laptop screen", "Product resting on open palm (Top down)",
-    "Flipping the product in the air and catching it", "Wiping product off hand with a tissue",
-    "Tapping product on a glass table", "Holding product inside a moving car",
-    "Dropping product onto a soft surface", "Squeezing a half-empty tube hard",
-    "Smudging product onto a mirror", "Peeling off a stubborn price tag",
-    "Holding product while steering wheel is visible", "Dropping product into a tote bag",
-    "Ripping open a cardboard delivery box", "Dipping a french fry into sauce",
-    "Tearing a sugar packet open", "Holding product alongside a parking ticket",
+// --- PLAN B: SEMANTIC ACTIVITY PARTITIONING (WEARABLE / PACKAGING / UNIVERSAL) ---
+export const RAW_HAND_ACTIVITY_WEARABLE = [
     "Gently stretching the fabric neckline to demonstrate elastic recovery",
     "Rubbing the heavy cotton fleece texture between thumb and index finger",
-    "Tilting the packaging to catch the metallic foil reflection in camera flash",
     "Flicking the metal zipper pull smoothly up and down the track",
     "Holding the garment fabric up against natural window light to test opacity",
     "Tracing the embroidered chest logo with index fingernail",
     "Gathering the shirt hem in one fist to demonstrate natural drape and drop",
     "Unzipping the jacket halfway with one hand while holding camera steady",
-    "Tapping fingernail against the heavy glass container with a sharp click",
+    "Turning the garment inside out to showcase clean interior seam stitching",
     "Draping the soft knitted fabric over forearm to show thickness and weight",
     "Pressing thumb firmly into the ribbed knit texture to show elasticity",
-    "Turning the garment inside out to showcase clean interior seam stitching",
-    "Peeling the protective seal strip slowly off the product label",
     "Rolling up the sleeve cuff twice to show inner contrast lining",
-    "Resting one hand inside the garment pocket while adjusting fabric drape"
+    "Resting one hand inside the garment pocket while adjusting fabric drape",
+    "Inspecting the collar ribbing and stitching reinforcement up close",
+    "Stretching the ribbed hemline lightly to show recovery and retention",
+    "Holding up the garment by shoulder seams to display silhouette",
+    "Brushing palm over fabric surface to highlight matte texture and weave",
+    "Pinching a fold of the material to show fabric thickness and hand-feel",
+    "Fastening a metal snap button with a satisfying click motion",
+    "Checking the woven brand tag and size label with thumb",
+    "Smoothly sliding fingers along the side seam to show flatlock stitching"
 ];
+
+export const RAW_HAND_ACTIVITY_PACKAGING = [
+    "Tilting the packaging to catch the metallic foil reflection in camera flash",
+    "Tapping fingernail against the heavy glass container with a sharp click",
+    "Peeling the protective seal strip slowly off the product label",
+    "Squeezing tube from the very bottom to show formula flow",
+    "Pressing the pump dispenser smoothly onto fingertip",
+    "Twisting the cap off in fluid motion with one hand",
+    "Swatching product texture smoothly on inner wrist",
+    "Rubbing serum or cream texture between thumb and index finger",
+    "Catching the light with the bottle curve and glass thickness",
+    "Lifting product slightly from table to show bottom label and batch code",
+    "Rotating product slowly to show clean typography on the side",
+    "Smoothing out the outer matte paper box wrapper",
+    "Unboxing with one hand carefully revealing inner packaging",
+    "Balancing product upright on open palm to demonstrate size",
+    "Poking the product surface (balm/cream) to show rich texture",
+    "Wiping a tiny smudge off the glossy bottle surface",
+    "Holding bottle upright near window to show liquid level and clarity",
+    "Opening compact magnetic closure with an audible snap",
+    "Displaying applicator wand or dropper slowly pulling out",
+    "Tracing the embossed logo typography with index finger"
+];
+
+export const RAW_HAND_ACTIVITY_UNIVERSAL = [
+    "Tilting product to catch the light and surface texture",
+    "Rotating product slowly to show 360 profile and side details",
+    "Holding product up against natural window light",
+    "Lifting product cleanly from table into camera focus",
+    "Pointing at the logo or key detail with index finger",
+    "Resting product on open palm (casual top-down POV)",
+    "Pushing product slightly forward into camera lens",
+    "Holding product firmly with fingertips showing scale against hand",
+    "Resting hand casually beside product on clean surface",
+    "Unboxing with one hand revealing product contents",
+    "Sliding product smoothly across the table surface",
+    "Holding product in front of a mirror reflection",
+    "Holding product while resting elbow casually on table",
+    "Comparing product scale comfortably held in one hand",
+    "Picking up product casually as if about to use it",
+    "Holding product inside a car with daylight catching edge",
+    "Placing product cleanly down on surface with gentle touch",
+    "Holding product angled slightly to avoid glare on logo",
+    "Holding product casually while thumb rests along side edge",
+    "Flipping product to reveal rear details cleanly"
+];
+
+// PLAN A: Reordered so high-value tactile fashion & product UGC interactions are in the top 60% (Weight = 8)
+const RAW_HAND_ACTIVITY = [
+    // --- TOP TIER (0.0 - 0.60): WEIGHT 8 (High Priority Tactile UGC) ---
+    ...RAW_HAND_ACTIVITY_WEARABLE,
+    ...RAW_HAND_ACTIVITY_PACKAGING,
+    ...RAW_HAND_ACTIVITY_UNIVERSAL,
+    // --- MID TIER (0.60 - 0.90): WEIGHT 4 (Authentic Contextual Hand Actions) ---
+    "Holding product with sleeve pulled over hand casually",
+    "Gripping package edge securely against denim lap",
+    "Holding product against concrete wall texture",
+    "Pulling product carefully out of a canvas tote bag",
+    "Resting hand casually on top of product package",
+    "Lifting product from table while talking off-camera",
+    "Covering barcode casually with thumb",
+    "Holding product over a coffee table surface",
+    "Flicking packaging corner lightly with finger",
+    "Tracing embossed text along edge with thumb",
+    "Placing product next to everyday essentials (keys/wallet)",
+    "Holding product near a cafe window catching warm ambient light",
+    // --- LOWER TIER (0.90 - 1.00): WEIGHT 2 (Rare / Playful Variations) ---
+    "Balancing product playfully between fingertips",
+    "Dropping product gently onto soft duvet surface",
+    "Dangling product casually by loop or strap",
+    "Tapping product base lightly on wooden tabletop"
+];
+
+export const POOL_HAND_ACTIVITY_WEARABLE = toWeighted([...RAW_HAND_ACTIVITY_WEARABLE, ...RAW_HAND_ACTIVITY_UNIVERSAL]);
+export const POOL_HAND_ACTIVITY_PACKAGING = toWeighted([...RAW_HAND_ACTIVITY_PACKAGING, ...RAW_HAND_ACTIVITY_UNIVERSAL]);
+export const POOL_HAND_ACTIVITY_UNIVERSAL = toWeighted(RAW_HAND_ACTIVITY_UNIVERSAL);
 export const POOL_HAND_ACTIVITY = toWeighted(RAW_HAND_ACTIVITY);
+
+export const getHandActivityPool = (isWearable?: boolean): WeightedItem[] => {
+    if (isWearable === true) return POOL_HAND_ACTIVITY_WEARABLE;
+    if (isWearable === false) return POOL_HAND_ACTIVITY_PACKAGING;
+    return POOL_HAND_ACTIVITY;
+};
 
 const RAW_HAND_LOCATIONS = [
     { name: "MESSY BEDROOM DUVET", desc: "Crumpled white bed sheets, casual.", lighting: "Phone torch light (Close up, raw flash)", vibe: "Lazy Morning", weight: 8 },
@@ -276,7 +317,12 @@ const RAW_HAND_IMPERFECTION = [
 ];
 export const POOL_HAND_IMPERFECTION = toWeighted(RAW_HAND_IMPERFECTION);
 
-// NEW: Lighting Styles Pool (To replace hardcoded flash in geminiService)
+// ============================================================================
+// [PLAN G: RESERVED & DISABLED LIGHTING POOL - DO NOT REMOVE]
+// POOL_LIGHTING_STYLES is kept here for future custom studio illumination pipelines.
+// It is intentionally disabled in default generation to prevent conflicting lighting
+// directives against the ambient lighting already embedded in POOL_*_LOCATION.
+// ============================================================================
 const RAW_LIGHTING_STYLES = [
     "Harsh direct flash (Paparazzi style, high contrast, red-eye)",
     "Soft diffused window light (Golden hour, warm, flattering)",
@@ -302,162 +348,182 @@ const RAW_LIGHTING_STYLES = [
 export const POOL_LIGHTING_STYLES = toWeighted(RAW_LIGHTING_STYLES);
 
 // === 4. CAMERA ANGLE & FRAMING POOL ===
+// PLAN D: Generalized camera angles without hard-coded environmental dependencies
 const RAW_CAMERA_ANGLES = [
     "0.5x Ultra-wide high angle (Viral TikTok selfie style, playful distorted perspective)",
     "Eye-level handheld snapshot (Direct, intimate, conversational eye-contact)",
     "Chest-level candid POV (Natural everyday distance, authentic social media feel)",
     "Slight low angle upward tilt (Empowering silhouette, elongating outfit lines)",
-    "Over-the-shoulder POV perspective (Looking into mirror or at outfit details)",
+    "Over-the-shoulder POV perspective (Looking at garment details and texture)",
     "Dutch angle (Subtle 10-degree tilted frame, dynamic spontaneous snapshot)",
     "Waist-level lookbook framing (Cropped at chin, emphasizing garment drape and fit)",
     "Close-up macro framing (Focus on fabric weave, texture, and hardware details)",
     "Hip-level low-angle snap (Street style candid, catching ground texture and walking motion)",
-    "Elevator ceiling corner high-angle (Aesthetic retro surveillance mirror POV)",
+    "High-angle corner perspective (Aesthetic retro surveillance / candid overhead POV)",
     "Direct front-on flat snapshot (Amateur point-and-shoot camera framing)",
     "Three-quarter dynamic candid angle (Model caught mid-turn, natural perspective)"
 ];
 export const POOL_CAMERA_ANGLE = toWeighted(RAW_CAMERA_ANGLES);
 
+// PLAN C: Dedicated camera angles for Faceless / Body Only mode (Zero face/eye-contact demands)
+const RAW_CAMERA_ANGLES_FACELESS = [
+    "Waist-level lookbook framing (Cropped at chin, emphasizing garment drape and fit)",
+    "Chest-level candid POV (Natural torso distance, authentic social media feel, head cropped out)",
+    "Slight low angle upward tilt (Empowering silhouette, elongating outfit lines, chin cropped)",
+    "Close-up macro framing (Focus on fabric weave, texture, and hardware details)",
+    "Hip-level low-angle snap (Street style candid, catching ground texture and walking motion)",
+    "Over-the-shoulder POV perspective (Looking at garment details and texture)",
+    "Three-quarter dynamic candid angle (Torso caught mid-turn, natural fit perspective, no face)",
+    "Dutch angle waist framing (Subtle 10-degree tilted frame, dynamic spontaneous outfit snapshot)",
+    "Direct front-on torso snapshot (Amateur point-and-shoot camera framing focused on garment fit)",
+    "Neck-down lookbook framing (High-end apparel lookbook perspective, hands casually placed)"
+];
+export const POOL_CAMERA_ANGLE_FACELESS = toWeighted(RAW_CAMERA_ANGLES_FACELESS);
+
+export const getCameraAnglePool = (isFaceless: boolean = false): WeightedItem[] => {
+    return isFaceless ? POOL_CAMERA_ANGLE_FACELESS : POOL_CAMERA_ANGLE;
+};
+
+// PLAN E: Talent Personas sanitized of clashing outerwear so user's product remains primary
 export const HUMAN_STYLE_POOLS: Record<string, WeightedItem[]> = {
     'TIKTOK_GIRL': toWeighted([
         "Hair: Messy Wolf Cut with bleached tips. Vibe: Y2K Grunge, oversized headphones around neck, deadpan expression.",
-        "Hair: Slicked back greasy bun. Vibe: 'Clean Girl' but real, acne patch on cheek, oversized grey hoodie.",
+        "Hair: Slicked back greasy bun. Vibe: 'Clean Girl' but real, acne patch on cheek, casual demeanor.",
         "Hair: Long messy waves with flyaways. Vibe: Coquette, pink ribbon in hair, crying makeup aesthetic.",
         "Hair: Hime cut (block bangs). Vibe: E-girl, heavy eyeliner, septum piercing, nonchalant.",
-        "Hair: Messy bed hair, no brushing. Vibe: Rotting in bed, comfortable, oversized t-shirt, glasses.",
+        "Hair: Messy bed hair, no brushing. Vibe: Rotting in bed, comfortable, glasses, candid morning look.",
         "Hair: Two space buns (messy). Vibe: Festival aftermath, glitter on cheeks, tired eyes.",
         "Hair: Clip-in bangs (visible clip). Vibe: DIY haircut, chaotic energy, chewing gum.",
-        "Hair: Dyed red hair, faded roots. Vibe: Indie sleaze, smudged mascara, leather jacket.",
+        "Hair: Dyed red hair, faded roots. Vibe: Indie sleaze, smudged mascara, layered silver chains, candid flash.",
         "Hair: Ponytail with scrunchie. Vibe: Gym rat, sweaty glow, redness on face, sporty.",
         "Hair: Bleached eyebrows. Vibe: High fashion amateur, weird angle, fish-eye lens effect.",
-        "Hair: Ribbon braids. Vibe: Balletcore, leg warmers, sitting on floor.",
-        "Hair: Wet hair look. Vibe: Fresh out of shower, towel on head, skincare routine.",
-        "Hair: Messy layers with butterfly clips. Vibe: 2000s revival, colorful beads, chaotic room.",
+        "Hair: Ribbon braids. Vibe: Balletcore, sitting comfortably on floor, soft expression.",
+        "Hair: Wet hair look. Vibe: Fresh out of shower, skincare routine, dewy natural skin.",
+        "Hair: Messy layers with butterfly clips. Vibe: 2000s revival, colorful beads, candid energy.",
         "Hair: Half-up half-down. Vibe: Library study session, stress acne, piles of books.",
-        "Hair: Short bob with beanie. Vibe: Skater girl, baggy jeans, bruised knee.",
-        "Hair: Long straight hair tucked in jacket. Vibe: Cold weather, red nose, scarf.",
+        "Hair: Short bob with beanie. Vibe: Skater girl, relaxed fit denim, bruised knee.",
+        "Hair: Long straight hair with soft texture. Vibe: Cold weather, red cheeks, oversized knitted scarf.",
         "Hair: Curly hair frizz halo. Vibe: Humidity, natural texture, no product.",
-        "Hair: Bandana over hair. Vibe: Bad hair day, sunglasses inside, cool attitude.",
-        "Hair: pigtails. Vibe: Irony, oversized graphic tee, eating chips.",
+        "Hair: Bandana over hair. Vibe: Bad hair day, sunglasses on head, cool attitude.",
+        "Hair: Pigtails with baby hairs. Vibe: Playful, eating chips, candid direct flash.",
         "Hair: Messy top knot. Vibe: Exam season, dark circles, energy drink in hand.",
-        "Hair: Soft layered wolf cut with curtain bangs. Vibe: Viral GRWM, bedroom mirror, oversized vintage graphic zip-up hoodie, candid head tilt.",
-        "Hair: Tousled effortless bedhead bob. Vibe: Casual lip balm check, wired earbuds, oversized boxy tee, laughing mid-sentence.",
-        "Hair: Voluminous 90s blowout with dynamic side sweep. Vibe: Vintage thrift haul, leather trench coat, confident candid strut.",
-        "Hair: Bubble braided pigtails with elastic bands. Vibe: Y2K street style, baggy parachute pants, disposable camera flash."
+        "Hair: Soft layered wolf cut with curtain bangs. Vibe: Viral GRWM, bedroom vanity mirror, wired earphones, candid head tilt.",
+        "Hair: Tousled effortless bedhead bob. Vibe: Casual lip balm check, wired earbuds, laughing mid-sentence.",
+        "Hair: Voluminous 90s blowout with dynamic side sweep. Vibe: Vintage thrift haul, tortoise sunglasses, confident candid strut.",
+        "Hair: Bubble braided pigtails with elastic bands. Vibe: Y2K street style, disposable camera flash."
     ]),
     'OPPA_KOREA': toWeighted([
         "Hair: Long Wolf Cut (Mullet) covering neck. Vibe: Edgy Rocker, eyebrow slit, piercings.",
-        "Hair: Two-block cut with messy bangs (Comma hair). Vibe: Soft Boyfriend, oversized hoodie, glasses.",
-        "Hair: Slightly wet look, brushed back. Vibe: Late night, unbuttoned shirt, flash photography.",
-        "Hair: Messy bed hair (Perm). Vibe: Morning coffee, grey sweatpants, cozy.",
-        "Hair: Buzz cut. Vibe: Military service leave, rebellious, streetwear.",
+        "Hair: Two-block cut with messy bangs (Comma hair). Vibe: Soft Boyfriend, thick frame glasses, relaxed coffee shop.",
+        "Hair: Slightly wet look, brushed back. Vibe: Late night, flash photography, candid side profile.",
+        "Hair: Messy bed hair (Perm). Vibe: Morning coffee, relaxed lounge aesthetic, cozy.",
+        "Hair: Buzz cut. Vibe: Military service leave, rebellious, urban streetwear.",
         "Hair: Bowl cut (Texture). Vibe: Nerd chic, thick rim glasses, library setting.",
-        "Hair: Bleached blonde tips. Vibe: Idol trainee, practice room mirror, sweat.",
-        "Hair: Long hair tied back. Vibe: Artist, paint on hands, apron.",
-        "Hair: Middle part (Curtain bangs). Vibe: Classic, trench coat, city street.",
-        "Hair: Cap worn backwards. Vibe: Street dancer, baggy cargo pants, sneakers.",
-        "Hair: Beanie covering ears. Vibe: Winter date, puffer jacket, holding hot pack.",
+        "Hair: Bleached blonde tips. Vibe: Idol trainee, dance studio mirror, light sweat.",
+        "Hair: Long hair tied back. Vibe: Artist, paint on hands, minimalist rings.",
+        "Hair: Classic middle part curtain bangs. Vibe: Minimalist city street walk, leather crossbody messenger, candid look back.",
+        "Hair: Cap worn backwards. Vibe: Street dancer, clean retro sneakers, natural swagger.",
+        "Hair: Ribbed beanie pushed back. Vibe: Street date, iced Americano in hand, silver rings, casual stance.",
         "Hair: Spiky messy hair. Vibe: 90s retro protagonist, band aid on nose.",
-        "Hair: Wet hair towel dry. Vibe: Bathroom selfie, foggy mirror.",
-        "Hair: Slicked side part. Vibe: Wedding guest, loosening tie, tired.",
-        "Hair: Shaggy layers. Vibe: Indie band member, guitar case, smoking area (implied).",
-        "Hair: Pink dyed hair. Vibe: Punk pop, colorful sweater, playground at night.",
-        "Hair: Man bun (Messy). Vibe: Cafe owner, apron, rolling up sleeves.",
-        "Hair: Textured shadow perm with feathered fringe. Vibe: Seongsu-dong streetwear, oversized boxy leather jacket, loose washed denim.",
-        "Hair: Refined dandy cut with side parted fringe. Vibe: Minimalist architect, crisp white button-down, rimless glasses, leather tote.",
+        "Hair: Wet hair towel dry. Vibe: Bathroom selfie, foggy mirror, post-shower fresh.",
+        "Hair: Slicked side part. Vibe: Evening event attendee, loosening collar button, relaxed tired charm.",
+        "Hair: Shaggy layers. Vibe: Indie band member, guitar case, moody ambient light.",
+        "Hair: Pink dyed hair. Vibe: Punk pop, colorful beads, urban playground at night.",
+        "Hair: Man bun (Messy). Vibe: Artisanal cafe barista, silver ear cuffs, rolling up sleeves.",
+        "Hair: Textured shadow perm with feathered fringe. Vibe: Seongsu-dong streetwear, minimalist silver chain, loose washed denim.",
+        "Hair: Refined dandy cut with side parted fringe. Vibe: Minimalist architect, rimless glasses, leather tote.",
         "Hair: Wet-look textured messy perm. Vibe: Late night Seoul rainy street, umbrella reflections, streetlights, candid glance back.",
-        "Hair: Clean high taper fade with natural textured top. Vibe: High-fashion streetwear, tactical crossbody sling, technical windbreaker."
+        "Hair: Clean high taper fade with natural textured top. Vibe: High-fashion streetwear, tactical crossbody sling, matte black sunglasses."
     ]),
     'HIJAB_MUSLIMAH': toWeighted([
-        "Style: Syar'i Layering (Pastel). Vibe: Feminine, garden background, soft natural light.",
-        "Style: Hijab Segi Empat (Clean). Vibe: Office look, blazer, holding coffee, candid motion blur.",
-        "Style: Malaysian Style (Bawal). Vibe: Neat draping, baju kurung, formal event, direct flash.",
-        "Style: White Mukena (Prayer). Vibe: Spiritual, soft morning light, texture detail.",
-        "Style: Batik Dress & Hijab. Vibe: Formal occasion, holding clutch, candid interaction.",
+        "Style: Syar'i Layering (Pastel). Vibe: Feminine, botanical garden background, soft natural light.",
+        "Style: Hijab Segi Empat (Clean). Vibe: Office look, minimalist lanyard, holding coffee, candid motion blur.",
+        "Style: Crisp Malaysian Bawal Clean Curve in Dusty Rose. Vibe: Modest aesthetic event, dainty wristwatch, soft warm flash.",
+        "Style: Flowy Soft Chiffon Hijab in Warm Sand. Vibe: Modest lifestyle creator, natural morning window light, delicate pearl brooch.",
+        "Style: Elegant Segi Empat Voile in Muted Olive. Vibe: Formal occasion guest, metallic clutch in hand, poised candid posture.",
         "Style: Instant Sport Hijab. Vibe: Post-workout, sweaty glow, red face, natural.",
-        "Style: Pashmina Silk (Flowy). Vibe: Kondangan outfit, elegant, flash photography, texture focus.",
+        "Style: Pashmina Silk (Flowy). Vibe: Kondangan guest, elegant drape, flash photography, texture focus.",
         "Style: Simple Bergo (Daily). Vibe: Casual home setting, holding groceries, natural sunlight.",
-        "Style: Draped Voile Bawal (Earth Tone). Vibe: Modest luxury, cream tailored abaya, soft natural courtyard lighting, graceful candid turn.",
-        "Style: Layered Chiffon Pashmina (Clean Tucked). Vibe: Modern corporate executive, neutral trench coat, carrying leather tote, bright lobby.",
+        "Style: Draped Voile Bawal (Earth Tone). Vibe: Modest luxury aesthetic, minimalist jewelry, soft natural courtyard lighting, graceful candid turn.",
+        "Style: Layered Chiffon Pashmina (Clean Tucked) in Espresso. Vibe: Modern creative professional, minimalist leather shoulder bag, bright lobby lighting.",
         "Style: Syar'i Layered Crepe in Dusty Mauve. Vibe: Feminine botanical garden walk, soft dappled morning sunlight, tranquil atmosphere.",
-        "Style: Neat Segi Empat Paris Premium in Sand. Vibe: Aesthetic weekend brunch, crisp linen shirt, pearl hairpins on hijab side, candid smile.",
-        "Style: Flowy Satin Silk Hijab in Champagne. Vibe: Formal wedding reception guest, structured modern kebaya, direct flash elegance.",
-        "Style: Textured Crinkle Shawl draped loosely over shoulder. Vibe: Pottery studio date, oversized knit cardigan, warm earthy tones."
+        "Style: Neat Segi Empat Paris Premium in Sand. Vibe: Aesthetic weekend brunch, pearl hairpins on hijab side, candid smile.",
+        "Style: Flowy Satin Silk Hijab in Champagne. Vibe: Formal evening event guest, dainty gold necklace, direct flash elegance.",
+        "Style: Textured Crinkle Shawl draped loosely over shoulder. Vibe: Pottery studio date, warm earthy tones, natural sidelight."
     ]),
     'HIJAB_CREATOR': toWeighted([
-        "Style: Loose Pashmina (Meleyot). Vibe: Gen Z aesthetic, oversized shirt, headphones, messy room.",
+        "Style: Loose Pashmina (Meleyot). Vibe: Gen Z aesthetic, wired headphones around neck, messy room.",
         "Style: Turban & Big Earrings. Vibe: Edgy fashion, sunglasses, night street flash.",
-        "Style: Hoodie over Inner Ninja. Vibe: Streetwear, cool attitude, city night background.",
+        "Style: Sleek Inner Ninja with baseball cap. Vibe: Modern urban streetwear, cool attitude, city night background.",
         "Style: Pashmina Crinkle (Messy). Vibe: Cafe hangout, earth tones, laughing covering mouth.",
-        "Style: Printed Scarf (Satin). Vibe: Brunch date, bright outfit, sunlight reflection.",
-        "Style: Denim on Denim Hijab. Vibe: Casual street, tote bag, walking motion.",
-        "Style: Monochrom Outfit. Vibe: Minimalist, aesthetic wall background, shadow play.",
-        "Style: Leather Jacket & Black Pashmina. Vibe: Grunge aesthetic, neon alleyway, moody lighting.",
-        "Style: Loose Pashmina Meleyot in Espresso Brown. Vibe: Gen Z coffee shop check, oversized bomber jacket, wired silver headphones, candid laugh.",
-        "Style: Turban Wrap with Chunky Gold Hoop Earrings. Vibe: High-fashion editorial street, vintage trench coat, sunglasses, night flash.",
-        "Style: Jersey Shawl wrapped tight with oversized zip-up hoodie. Vibe: Urban streetwear, cargo parachute pants, skatepark backdrop.",
-        "Style: Crinkle Cotton Pashmina with Tortoiseshell Sunglasses on crown. Vibe: Senopati aesthetic brunch, boxy blazer, iced latte in hand.",
-        "Style: Printed Silk Square Scarf tied vintage neck-wrap style. Vibe: Film camera thrift run, oversized denim jacket, retro cool.",
-        "Style: Sleek Clean-Tuck Pashmina with high-neck ribbed knit. Vibe: Minimalist lookbook, clean white studio wall, sharp modern silhouette."
+        "Style: Printed Scarf (Satin). Vibe: Brunch date, radiant sunlight reflection, cheerful energy.",
+        "Style: Draped Denim-Hue Hijab. Vibe: Casual street, canvas tote bag, walking motion.",
+        "Style: Monochrome Dark Pashmina. Vibe: Minimalist, aesthetic concrete wall background, shadow play.",
+        "Style: Textured Matte Black Pashmina with silver ring accents. Vibe: Grunge street aesthetic, chunky silver chains, neon alleyway lighting.",
+        "Style: Loose Pashmina Meleyot in Espresso Brown. Vibe: Gen Z coffee shop check, wired silver headphones, candid laugh, iced latte in hand.",
+        "Style: Turban Wrap with Chunky Gold Hoop Earrings. Vibe: High-fashion editorial street, vintage sunglasses, night flash.",
+        "Style: Sleek Jersey Shawl wrapped tight. Vibe: Urban street creator, baggy parachute cargo pants, skatepark backdrop.",
+        "Style: Crinkle Cotton Pashmina with Tortoiseshell Sunglasses on crown. Vibe: Senopati aesthetic brunch, iced latte in hand.",
+        "Style: Printed Silk Square Scarf tied chic neck-wrap style. Vibe: Film camera thrift run, vintage sunglasses on crown, canvas tote bag.",
+        "Style: Sleek Clean-Tuck Pashmina with silver choker. Vibe: Minimalist lookbook, clean white studio wall, sharp modern silhouette."
     ]),
     'REALISTIC_STREET': toWeighted([
-        "Style: Batik Shirt (Loose). Vibe: Office worker lunch break, lanyard visible, holding iced tea.",
-        "Style: Gojek/Grab Jacket (Open). Vibe: Resting on bike, smoking break, helmet on arm.",
-        "Style: High School Uniform (Untucked). Vibe: After school hangout, backpack on one shoulder.",
-        "Style: Kebaya Modern with Sneakers. Vibe: Wedding reception guest, tired feet.",
-        "Style: Flannel Shirt tied around waist. Vibe: Concert queue, holding ticket.",
-        "Style: Oversized Jersey. Vibe: Futsal aftermath, sweating, drinking water.",
-        "Style: Batik Sarong & T-shirt. Vibe: Relaxing at porch, sandals, morning coffee.",
-        "Style: Denim Jacket & Tote Bag. Vibe: Art gallery date, adjusting glasses.",
-        "Style: Raincoat (Plastic). Vibe: Caught in rain, wet hair, holding umbrella.",
-        "Style: Helm Proyek. Vibe: Site visit, dusty clothes, holding blueprint.",
-        "Style: Masker Duckbill (Chin). Vibe: Commuter train, tired eyes, holding handstrap.",
-        "Style: Safari Suit (PNS). Vibe: Monday morning, ID card, holding map.",
-        "Style: Boxy Faded Graphic Tee & Loose Cargo Pants. Vibe: MRT underground concourse, waiting for train, earphones plugged in.",
-        "Style: Vintage Bowling Shirt over White Ribbed Tank. Vibe: Kemang vinyl record cafe, relaxed laughing with friends, iced tea glass.",
-        "Style: Casual Batik Shirt with modern slim collar & Chinos. Vibe: SCBD pedestrian crossing during lunch hour, lanyard tucked in pocket.",
-        "Style: Oversized Workwear Canvas Jacket & Loose Denim. Vibe: Skate plaza bench, sneaker laces loose, candid snapshot mid-chat.",
-        "Style: Lightweight Nylon Windbreaker & Crossbody Sling. Vibe: Caught in light tropical rain under cafe awning, phone in hand.",
-        "Style: Modern Kebaya Encim paired with High-Waist Denim. Vibe: Cultural heritage district stroll, retro film camera around neck."
+        "Hair: Clean side-parted crop. Vibe: Office worker lunch break, company lanyard visible, holding iced tea cup.",
+        "Hair: Tousled short textured crop. Vibe: Urban commuter taking a breather, helmet resting on scooter seat, iced tea in hand.",
+        "Hair: Casual middle-part curtain bangs. Vibe: Youth street style, canvas backpack on one shoulder, relaxed student aesthetic.",
+        "Hair: Textured half-up messy bun. Vibe: Weekend social gathering, retro sneakers, candid laughter.",
+        "Hair: Flannel tied casually around waist. Vibe: Music concert queue, holding festival wristband.",
+        "Hair: Short athletic buzz fade. Vibe: Futsal aftermath, refreshing with water, athletic glow.",
+        "Hair: Casual relaxed bedhead. Vibe: Morning coffee on open porch, warm ceramic mug, relaxed candid smile.",
+        "Hair: Messy natural fringe. Vibe: Urban transit stop, compact nylon crossbody sling, earphones plugged in.",
+        "Hair: Damp tousled hair catching light. Vibe: Sheltering from tropical drizzle under cafe awning, compact umbrella in hand.",
+        "Hair: Clean low taper fade with natural top. Vibe: Creative studio designer, holding rolled architectural prints, rugged field watch.",
+        "Hair: Duckbill mask pulled down to chin. Vibe: Commuter train platform, tired evening eyes, phone in hand.",
+        "Hair: Neat classic comb-over with light pomade. Vibe: Urban professional on lunch break, ID lanyard around neck, minimalist wristwatch.",
+        "Hair: Textured French crop. Vibe: MRT underground concourse, waiting for train, earphones plugged in.",
+        "Hair: Natural effortless waves. Vibe: Kemang vinyl record cafe, relaxed laughing with friends, iced glass.",
+        "Hair: Neat tapered gentleman's cut. Vibe: SCBD pedestrian crossing during lunch hour, lanyard tucked in pocket, takeaway coffee cup.",
+        "Hair: Short messy textured styling. Vibe: Skate plaza bench, loose vintage washed denim, canvas tote beside feet.",
+        "Hair: Sleek low chignon bun with silver hairpin. Vibe: Cultural heritage district stroll, retro film camera around neck."
     ]),
     'CHINDO_ELEGANT': toWeighted([
-        "Style: Tailored Minimalist Blazer & Silk Camisole. Vibe: Old Money luxury, Senopati cafe, clean gold jewelry, subtle natural glow.",
-        "Style: Cashmere Cardigan draped over shoulders. Vibe: High-end PIK aesthetic, matcha latte on marble table, polished neat hair.",
-        "Style: Elegant Pleated Midi Dress. Vibe: Upscale hotel lobby, understated designer bag, candid glancing away.",
-        "Style: Crisp White Poplin Shirt & Linen Trousers. Vibe: Sunday brunch date, dainty wristwatch, effortlessly wealthy.",
-        "Style: Monochrome Tweed Set. Vibe: Art gallery opening, subtle pearl earrings, sleek straight hair with center part.",
-        "Style: Relaxed Silk Button-Down & High-Waist Denim. Vibe: Valet waiting area, iced Americano, sunglasses on head.",
-        "Style: Knit Halter Top & Wide-Leg Slacks. Vibe: Rooftop lounge sunset, glass of sparkling water, soft golden hour glow.",
-        "Style: Oversized Wool Coat & Turtle Neck. Vibe: Winter trip aesthetic, leather tote, immaculate styling.",
-        "Style: Strapless Minimalist Linen Top with Gold Shell Pendant. Vibe: Beach club cabana, iced sparkling beverage, effortless sun-kissed charm.",
-        "Style: Fine-Knit Charcoal Polo & Pleated Bermuda Shorts. Vibe: Country club terrace, tennis court backdrop, clean quiet luxury.",
-        "Style: Silk Slip Dress with Tailored Boyfriend Blazer. Vibe: Upscale Italian restaurant, candlelight reflection, minimalist diamond pendant.",
-        "Style: Cable-Knit Cream Sweater & Wide Linen Slacks. Vibe: Modern architectural villa porch, reading a magazine, serene morning air."
+        "Hair: Silky smooth center-parted blowout. Vibe: Old Money luxury, Senopati cafe, clean gold jewelry, subtle natural glow.",
+        "Hair: Polished neat low bun with claw clip. Vibe: High-end PIK aesthetic, matcha latte on marble table, pearl earrings.",
+        "Hair: Gentle salon blowout with curtain bangs. Vibe: Upscale hotel lobby, understated designer handbag, candid glancing away.",
+        "Hair: Sleek straight hair tucked behind ears. Vibe: Sunday brunch date, dainty wristwatch, effortlessly wealthy aura.",
+        "Hair: Sleek glass-shine straight hair with center part. Vibe: Art gallery opening, subtle pearl earrings, dainty Cartier watch.",
+        "Hair: Relaxed waves with tortoiseshell sunglasses on head. Vibe: Valet waiting area, iced Americano in hand.",
+        "Hair: Soft textured updo with face tendrils. Vibe: Rooftop lounge sunset, glass of sparkling water, golden hour glow.",
+        "Hair: Polished low ponytail with velvet ribbon. Vibe: High-end transit aesthetic, structured leather tote, immaculate grooming.",
+        "Hair: Sun-kissed natural wavy hair. Vibe: Beach club cabana, iced sparkling beverage, effortless coastal charm.",
+        "Hair: Clean side-swept blow dry. Vibe: Country club terrace, tennis court backdrop, clean quiet luxury.",
+        "Hair: Soft Hollywood waves swept over one shoulder. Vibe: Upscale dining lounge, candlelight reflection, minimalist diamond pendant.",
+        "Hair: Relaxed morning bedhead with silk scrunchie. Vibe: Modern architectural villa porch, reading a magazine, serene morning air."
     ]),
     'CLEAN_GIRL': toWeighted([
-        "Hair: Slicked back neat ballerina bun with center part. Vibe: Dewy glazed donut skin, chunky gold hoop earrings, white crewneck.",
-        "Hair: Glossy smooth claw clip updo. Vibe: Fresh skincare glow, lip oil shine, oversized beige linen shirt.",
+        "Hair: Slicked back neat ballerina bun with center part. Vibe: Dewy glazed donut skin, chunky gold hoop earrings, fresh minimalist aesthetic.",
+        "Hair: Glossy smooth claw clip updo. Vibe: Fresh skincare glow, lip oil shine, dainty chain necklace.",
         "Hair: Effortless blowout with soft tucked ends. Vibe: Pilates aesthetic, holding green juice, bare fresh skin.",
-        "Hair: Sleek low ponytail with middle part. Vibe: Minimalist chic, brushed up soap brows, neutral ribbed tank top.",
-        "Hair: Damp-looking brushed back waves. Vibe: Post-shower skincare routine, dewy cheekbones, clean white towel around neck.",
+        "Hair: Sleek low ponytail with middle part. Vibe: Minimalist chic, brushed up soap brows, delicate gold hoops.",
+        "Hair: Damp-looking brushed back waves. Vibe: Post-shower skincare routine, dewy cheekbones, clean natural skin.",
         "Hair: Neat half-up twist with tortoiseshell clip. Vibe: Clean aesthetic bedroom, subtle gold necklace, minimal makeup.",
         "Hair: Smooth brushed-back bob tucked behind ears. Vibe: Architectural cafe, glass water bottle, fresh manicured nude nails.",
-        "Hair: Natural airy texture with parted curtain bangs. Vibe: Morning sunlight in kitchen, warm mug, relaxed oatmeal sweater.",
-        "Hair: Sleek high braided ponytail with gelled baby hairs. Vibe: Athleisure chic, matching espresso brown unitard, clean sneakers.",
-        "Hair: Soft layered shoulder-length cut with healthy mirror shine. Vibe: Organic farmers market, canvas tote with fresh bread and flowers.",
+        "Hair: Natural airy texture with parted curtain bangs. Vibe: Morning sunlight in kitchen, warm mug, relaxed mood.",
+        "Hair: Sleek high braided ponytail with gelled baby hairs. Vibe: Athleisure chic, clean white sneakers, focused candid look.",
+        "Hair: Soft layered shoulder-length cut with healthy mirror shine. Vibe: Organic farmers market, canvas tote with fresh flowers.",
         "Hair: French pin chignon with wispy temple strands. Vibe: Minimalist aesthetic vanity, applying lip balm, serene morning light.",
-        "Hair: Tousled natural beach waves with sun-kissed highlights. Vibe: Coastal wellness walk, oversized cotton poplin shirt, bare skin."
+        "Hair: Tousled natural beach waves with sun-kissed highlights. Vibe: Coastal wellness walk, clean glowing skin, sea breeze."
     ]),
     'EDGY_Y2K': toWeighted([
         "Hair: Chunky blonde highlights with jagged baby bangs. Vibe: Cyber Y2K, wired earphones tangled, flash photography, tinted shades.",
-        "Hair: Spiky bun with face-framing tendrils. Vibe: Retro club aftermath, glossy lips, low-rise cargo pants, gritty direct flash.",
+        "Hair: Spiky bun with face-framing tendrils. Vibe: Retro club aftermath, glossy lips, baggy parachute pants, gritty direct flash.",
         "Hair: Messy crimped waves with silver star clips. Vibe: Indie sleaze, smudged eyeliner, metallic shoulder bag, candid snapshot.",
-        "Hair: Jet black pin-straight hair with micro-bangs. Vibe: 2000s MTV aesthetic, chunky belt, platform boots, harsh smartphone flash.",
+        "Hair: Jet black pin-straight hair with micro-bangs. Vibe: 2000s MTV aesthetic, chunky grommet belt, platform shoes, harsh smartphone flash.",
         "Hair: Two high braided pigtails with zig-zag parting. Vibe: Y2K arcade night, bubblegum bubble, digital camera POV.",
-        "Hair: Bleached platinum choppy layers. Vibe: Grunge pop, leather mini skirt, flash glare reflection on CD cover.",
+        "Hair: Bleached platinum choppy layers. Vibe: Grunge pop, silver waist chains, flash glare reflection on CD cover.",
         "Hair: Dip-dyed pink tips on dark bob. Vibe: Tokyo Shibuya street snapshot, layered silver chains, disposable camera look.",
-        "Hair: Space buns with glitter gel parting. Vibe: Rave afterparty, oversized graphic jersey, fishnet wrist warmers, raw flash.",
-        "Hair: Voluminous teased layers with trucker hat. Vibe: 2004 nostalgia, ribbed baby tee, low-slung denim, retro digital watch.",
+        "Hair: Space buns with glitter gel parting. Vibe: Rave afterparty, oversized graphic tee, fishnet wrist warmers, raw flash.",
+        "Hair: Voluminous teased layers with trucker hat. Vibe: 2004 nostalgia, low-slung denim, retro digital watch.",
         "Hair: Asymmetrical choppy bob with zig-zag clips. Vibe: Mall photobooth session, lip gloss wand in hand, high contrast flash."
     ]),
     'FACELESS_BODY': toWeighted([
@@ -526,63 +592,81 @@ const RAW_HUMAN_LOCATIONS = [
 ];
 export const POOL_HUMAN_LOCATION: WeightedLocation[] = RAW_HUMAN_LOCATIONS;
 
-const RAW_HUMAN_ACTIVITY = [
-    "Applying lip gloss while looking into a mirror/phone", "Laughing covering mouth with one hand (shy)",
-    "Fixing a hair flyaway or tucking hair behind ear", "Holding a coffee cup/drink, looking away bored",
-    "Checking phone with a cracked screen", "Shielding eyes from the harsh flash light with hand",
-    "Adjusting the collar/clothing, looking down", "Waving goodbye or doing a peace sign blurrily",
-    "Eating a slice of pizza messily", "Fixing glasses on nose bridge",
-    "Tying shoelaces (crouched)", "Holding a burning cigarette (or lollipop)",
-    "Taking a photo of food (POV)", "Yawning covering mouth",
-    "Stretching arms overhead", "Leaning against wall looking tired",
-    "Digging through tote bag", "Applying pimple patch",
-    "Drinking from a straw (awkward)", "Holding hands with someone (out of frame)",
-    "Pointing at menu/sign", "Rubbing sleepy eyes",
-    "Sneezing (mid-action)", "Laughing throwing head back",
-    "Holding a cat/dog awkwardly", "Adjusting face mask",
-    "Putting on earrings", "Checking watch/time",
-    "Biting fingernail (nervous)", "Flipping hair back",
-    "Holding heavy shopping bags", "Texting with both thumbs",
-    "Applying eye drops", "Eating cup noodles",
-    "Holding umbrella in wind", "Zipping up jacket",
-    "Brushing crumbs off shirt", "Putting hair in ponytail",
-    "Cleaning glasses with shirt", "Applying hand sanitizer",
-    "Adjusting a silk tie or collar", "Holding a crystal glass of sparkling water",
-    "Reading a vintage newspaper", "Looking out a rainy window thoughtfully",
-    "Pulling up a dark hood", "Looking at a glowing screen reflection on face",
-    "Exhaling vapor/smoke in the cold", "Adjusting a silver watch",
-    "Blowing a bubble with chewing gum (popping)", "Tying hair into a messy bun with a scrunchie",
-    "Wiping sweat off forehead with back of hand", "Staring blankly at a laptop screen",
-    "Putting a stray hair strand in mouth", "Holding a lighter flame to the camera",
-    "Peeling a sticker off a piece of fruit", "Squinting at a distant street sign",
-    "Picking teeth with a toothpick", "Shaking out an umbrella",
-    "Zipping a duffel bag shut", "Coughing into elbow",
-    "Checking teeth in phone selfie camera", "Blowing on hot coffee",
-    "Licking icing off a finger", "Stretching neck side to side",
-    "Pumping gas into a car", "Swiping a subway card",
-    "Typing furiously on a mechanical keyboard", "Lighting a candle with a match",
-    "Twirling a pen absentmindedly", "Putting a quarter into a vending machine",
-    "Fixing makeup using the car sun-visor mirror", "Fanning self with a folded magazine",
-    "Struggling to open a stubborn plastic wrapper", "Wiping phone screen with shirt hem",
-    "Tapping credit card on the table impatiently", "Adjusting a rear-view mirror",
-    "Untangling wired earphones", "Applying hand cream slowly",
-    "Picking a piece of lint off pants", "Holding a half-eaten burger",
-    "Shaking a spray paint can", "Zipping up a jacket in the cold",
-    "Taking a selfie with a digital camera", "Biting the cap off a pen",
+// --- PLAN B: HUMAN ACTIVITY PARTITIONING (WEARABLE & UNIVERSAL) ---
+export const RAW_HUMAN_ACTIVITY_WEARABLE = [
+    "Hooking thumb casually into belt loop or pocket while shifting stance",
+    "Adjusting jacket collar or neckline while looking down casually",
+    "Unzipping jacket halfway to reveal inner layering",
+    "Inspecting sleeve cuff texture absentmindedly while waiting",
+    "Checking outfit reflection in a dark storefront glass window",
+    "Smoothing hemline of the garment while walking mid-stride",
+    "Resting one hand inside jacket or pant pocket with relaxed posture",
+    "Shrugging shoulders lightly to show relaxed oversized shoulder drop",
+    "Turning slowly at 45-degree angle to showcase garment drape",
+    "Light casual walk forward towards camera showing natural fabric sway",
+    "Brushing a speck of lint off sleeve or pants with natural movement",
+    "Adjusting shoulder strap of canvas tote bag without hiding outfit chest",
+    "Casually buttoning or unbuttoning front closure while mid-conversation",
+    "Reaching into pocket casually to retrieve phone",
+    "Crossing arms loosely across chest showing sleeve fit and drape",
+    "Gently pulling sleeve down over knuckles in relaxed pose",
+    "Adjusting waistband or belt while looking aside",
+    "Stepping forward to catch sidelight across outfit texture"
+];
+
+export const RAW_HUMAN_ACTIVITY_UNIVERSAL = [
     "Tucking a loose hair strand behind ear while smiling down shyly",
     "Adjusting sunglasses on nose bridge while checking phone notifications",
-    "Unzipping jacket collar halfway to reveal inner layering",
-    "Holding an iced matcha cup while checking wristwatch with a slight tilt",
+    "Holding an iced matcha or coffee cup while checking wristwatch",
+    "Laughing covering mouth with one hand (shy candid moment)",
     "Leaning casually against subway handrail while listening to earphones",
-    "Shaking hair out loosely after removing an umbrella",
-    "Casually hooking thumb into belt loop while talking to someone off-camera",
-    "Inspecting sleeve cuff texture absentmindedly while waiting",
-    "Sipping drink through a straw while maintaining direct eye contact",
-    "Reaching into jacket inner pocket to grab car keys",
-    "Adjusting shoulder strap of canvas tote bag mid-stride",
-    "Checking reflection in a dark storefront glass window"
+    "Texting with both thumbs with focused casual expression",
+    "Checking wristwatch with a slight head tilt",
+    "Looking out a window thoughtfully catching ambient sidelight",
+    "Sipping drink through a straw while looking towards camera",
+    "Flipping hair back loosely over shoulder",
+    "Sitting casually on a cafe chair with relaxed posture",
+    "Waving lightly or greeting someone off-camera with a gentle smile",
+    "Untangling wired earphones while waiting",
+    "Applying lip balm casually using phone screen as mirror",
+    "Stretching arms lightly in a relaxed candid break",
+    "Walking mid-stride with natural candid momentum",
+    "Resting chin on palm while listening attentively",
+    "Shielding eyes lightly from direct sunlight with hand",
+    "Fixing glasses frame on nose bridge while glancing down",
+    "Checking teeth or smile subtly in phone selfie camera"
 ];
+
+// PLAN A: Reordered so wearable fashion & high-converting lifestyle UGC gestures receive Weight 8
+const RAW_HUMAN_ACTIVITY = [
+    // --- TOP TIER (0.0 - 0.60): WEIGHT 8 (High Priority Wearable & UGC Gestures) ---
+    ...RAW_HUMAN_ACTIVITY_WEARABLE,
+    ...RAW_HUMAN_ACTIVITY_UNIVERSAL,
+    // --- MID TIER (0.60 - 0.90): WEIGHT 4 (Authentic Contextual Everyday Actions) ---
+    "Putting on small hoop earrings while checking reflection",
+    "Holding umbrella in light drizzle while checking phone",
+    "Digging through canvas tote bag for keys",
+    "Tying hair into a loose messy bun with scrunchie",
+    "Applying hand cream slowly into fingers",
+    "Holding a crystal glass of sparkling water on table",
+    "Fanning self gently with folded cafe menu",
+    "Adjusting car rearview mirror before driving",
+    "Tapping transport card at subway turnstile",
+    "Shaking water droplets off folding umbrella",
+    // --- LOWER TIER (0.90 - 1.00): WEIGHT 2 (Rare Lifestyle Quirks) ---
+    "Twirling a pen absentmindedly while studying",
+    "Blowing lightly on hot coffee before taking a sip",
+    "Looking up at street signs while navigating"
+];
+
+export const POOL_HUMAN_ACTIVITY_WEARABLE = toWeighted([...RAW_HUMAN_ACTIVITY_WEARABLE, ...RAW_HUMAN_ACTIVITY_UNIVERSAL]);
+export const POOL_HUMAN_ACTIVITY_UNIVERSAL = toWeighted(RAW_HUMAN_ACTIVITY_UNIVERSAL);
 export const POOL_HUMAN_ACTIVITY = toWeighted(RAW_HUMAN_ACTIVITY);
+
+export const getHumanActivityPool = (isWearable?: boolean): WeightedItem[] => {
+    if (isWearable === false) return POOL_HUMAN_ACTIVITY_UNIVERSAL;
+    return POOL_HUMAN_ACTIVITY_WEARABLE;
+};
 
 const RAW_HUMAN_IMPERFECTION = [
     "Red-eye effect from flash", "Motion blur on hand moving",
