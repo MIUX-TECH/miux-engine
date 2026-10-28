@@ -420,7 +420,22 @@ const RAW_CAMERA_ANGLES = [
     "Hip-level low-angle snap (Street style candid, catching ground texture and walking motion)",
     "High-angle corner perspective (Aesthetic retro surveillance / candid overhead POV)",
     "Direct front-on flat snapshot (Amateur point-and-shoot camera framing)",
-    "Three-quarter dynamic candid angle (Model caught mid-turn, natural perspective)"
+    "Three-quarter dynamic candid angle (Model caught mid-turn, natural perspective)",
+    "0.5x Ultra-wide low-ground angle (Viral TikTok footwear-up perspective, dramatic elongated silhouette)",
+    "Elevator mirror selfie angle (Direct camera flash bouncing off reflective interior, full outfit visible)",
+    "Direct point-and-shoot camera flash eye-level (Crisp paparazzi-style snapshot with sharp shadow drop)",
+    "High-angle 45-degree selfie perspective (Held slightly above forehead, capturing collarline and shoulders)",
+    "Hip-level candid walking snapshot (Street-style photographer walking alongside subject, natural stride)",
+    "Low-angle knee-height upward shot (Ground-hugging angle creating an imposing fashion silhouette)",
+    "Three-quarter full-length lookbook angle (Clean vertical framing capturing footwear up to head in balance)",
+    "Intimate bust-level three-quarter crop (Intimate framing from chest to chin emphasizing fabric and face)",
+    "Over-the-shoulder glance angle (Camera behind model's shoulder capturing back fabric and side profile)",
+    "Dutch angle 15-degree spontaneous grab (Edgy fanzine snapshot framing, dynamic kinetic energy)",
+    "Candid doorway / pillar frame peek (Natural architectural foreground framing subject casually)",
+    "High-angle staircase bird's eye look-down (Camera looking down from stairs or balcony at subject below)",
+    "Low-mode tracking stride angle (Gliding just above ground level capturing hem movement and footwear)",
+    "Seated conversational eye-level perspective (Intimate cafe or bench framing directly across from subject)",
+    "Slight 20-degree profile glide angle (Capturing side silhouette, sleeve length, and jawline contours)"
 ];
 export const POOL_CAMERA_ANGLE = toWeighted(RAW_CAMERA_ANGLES);
 
@@ -435,7 +450,19 @@ const RAW_CAMERA_ANGLES_FACELESS = [
     "Three-quarter dynamic candid angle (Torso caught mid-turn, natural fit perspective, no face)",
     "Dutch angle waist framing (Subtle 10-degree tilted frame, dynamic spontaneous outfit snapshot)",
     "Direct front-on torso snapshot (Amateur point-and-shoot camera framing focused on garment fit)",
-    "Neck-down lookbook framing (High-end apparel lookbook perspective, hands casually placed)"
+    "Neck-down lookbook framing (High-end apparel lookbook perspective, hands casually placed)",
+    "Strict neck-down lookbook crop (Cropped precisely at collarbone, centering full chest graphic and torso drape)",
+    "Chin-cropped chest and waist framing (Chin resting right at top frame border, zero eyes/face visible)",
+    "Waist-to-mid-thigh apparel crop (Tight commercial framing highlighting waistband, pockets, and hemline drop)",
+    "Low-angle ground-up torso framing (Knee to chest perspective, head completely omitted above upper frame)",
+    "High-angle chest-down mirror snapshot (Phone camera held at lower chest, looking down at outfit and trousers)",
+    "Seated lap and torso candid perspective (Model seated on chair/bench, framing thighs, lap, and garment hem)",
+    "Rear upper-back yoke and collar framing (Neck-down rear angle showcasing back graphic and shoulder width)",
+    "Three-quarter headless torso turn (Model turned 35 degrees, highlighting side seam, arm drape, and silhouette)",
+    "Mid-stride hip-level motion crop (Tracking walking cadence from waist to shins, capturing fabric flutter)",
+    "Macro side-profile sleeve & seam angle (Close framing from armpit to wrist cuff showing weave and stitching)",
+    "Dutch angle waist snapshot (12-degree artistic tilt focused strictly on waist, pockets, and fabric texture)",
+    "Chest-down horizontal flat lay perspective worn on body (Overhead downward angle looking at front torso)"
 ];
 export const POOL_CAMERA_ANGLE_FACELESS = toWeighted(RAW_CAMERA_ANGLES_FACELESS);
 
@@ -807,13 +834,14 @@ export const POOL_HUMAN_LOCATION: WeightedLocation[] = RAW_HUMAN_LOCATIONS;
 
 // --- PLAN B: HUMAN ACTIVITY PARTITIONING (WEARABLE & UNIVERSAL) ---
 export const RAW_HUMAN_ACTIVITY_WEARABLE = [
+    // --- FIT & DRAPE REALISM ---
     "Hooking thumb casually into belt loop or pocket while shifting stance",
-    "Adjusting jacket collar or neckline while looking down casually",
-    "Unzipping jacket halfway to reveal inner layering",
+    "Adjusting garment collar or neckline while looking down casually",
+    "Adjusting front zipper or button closure halfway with relaxed finger motion",
     "Inspecting sleeve cuff texture absentmindedly while waiting",
     "Checking outfit reflection in a dark storefront glass window",
     "Smoothing hemline of the garment while walking mid-stride",
-    "Resting one hand inside jacket or pant pocket with relaxed posture",
+    "Resting one hand inside trouser or garment pocket with relaxed posture",
     "Shrugging shoulders lightly to show relaxed oversized shoulder drop",
     "Turning slowly at 45-degree angle to showcase garment drape",
     "Light casual walk forward towards camera showing natural fabric sway",
@@ -824,7 +852,37 @@ export const RAW_HUMAN_ACTIVITY_WEARABLE = [
     "Crossing arms loosely across chest showing sleeve fit and drape",
     "Gently pulling sleeve down over knuckles in relaxed pose",
     "Adjusting waistband or belt while looking aside",
-    "Stepping forward to catch sidelight across outfit texture"
+    "Stepping forward to catch sidelight across outfit texture",
+    "Subtly tucking the front hem of the garment into waistband with thumbs while adjusting stance",
+    "Gently tugging down the hemline of the garment to straighten the fabric drape while standing straight",
+    "Resting both thumbs casually inside front trouser or skirt pockets with fingers pointing down",
+    "Adjusting the shoulder seam placement with two fingers to showcase the relaxed drop-shoulder cut",
+    "Casually unbuttoning or fastening a top button or closure with relaxed finger motion",
+    "Smoothing the side seams of the garment flat against the hips with open palms",
+    "Slightly bunching up one sleeve at the forearm to create natural fabric folds",
+    // --- TACTILE FABRIC INTERACTION ---
+    "Pinching and testing the fabric weight between thumb and index finger near the hem",
+    "Gently pulling the ribbed sleeve cuff over the wrist to demonstrate fabric stretch and elasticity",
+    "Resting one hand naturally over the chest print or logo graphic while talking or looking aside",
+    "Tracing the collar neckline lightly with fingertips to check the seam smoothness",
+    "Sliding hands fully into garment or bottom pockets, creating natural tension creases across the fabric",
+    "Flicking a microscopic stray thread or speck of dust off the chest panel with index finger",
+    "Holding the edge of the sleeve while looking down at the wrist cuff texture",
+    // --- KINETIC PHYSICS & DRAPE DYNAMICS ---
+    "Taking two relaxed steps forward so the garment fabric catches natural movement and sways",
+    "Slowly pivoting upper torso 30 degrees to the side, highlighting the lateral silhouette of the outfit",
+    "Shifting resting weight from right leg to left leg, creating organic asymmetrical folds in the fabric",
+    "Crossing ankles loosely while leaning back against a wall or counter, letting the fabric drape naturally",
+    "Lightly shaking out the lower hem of the garment with a wrist flick to let air settle the fabric",
+    "Turning upper back slightly toward the side to showcase the rear print or yoke seam",
+    "Raising one arm casually to adjust hair or cap, showing the garment's armhole fit and sleeve drape",
+    // --- LIFESTYLE & UGC CASUAL MOMENTS ---
+    "Reaching into front pocket to retrieve phone or small item, pulling the fabric taut naturally",
+    "Looping one index finger through a belt loop or waistband while leaning casually",
+    "Holding a shoulder strap or tote handle lightly with one hand, keeping the outfit chest unobstructed",
+    "Gently pressing one hand against the lower stomach area while checking overall outfit proportion",
+    "Rolling shoulders back lightly in a relaxed stretch, settling the fabric cleanly across the back",
+    "Loosely holding both sides of the garment hem while smiling down at the fit"
 ];
 
 export const RAW_HUMAN_ACTIVITY_UNIVERSAL = [
