@@ -171,11 +171,14 @@ const OutfitStudio: React.FC<OutfitStudioProps> = ({ onAnalysisComplete, isLoadi
                                         <option value="Clean Girl Aesthetic (Glowing Skin, Minimalist)">Clean Girl (Minimalist)</option>
                                         <option value="Edgy Y2K Girl (Flash Photography, Cool Attitude)">Edgy Y2K (Flash Photo)</option>
                                     </optgroup>
-                                    <optgroup label="--- LOKAL ---">
+                                    <optgroup label="--- LOKAL & URBAN ---">
                                         <option value="Hijab Muslimah Model (Fashion & Daily)">Hijab Muslimah (Fashion & Daily)</option>
                                         <option value="Hijab Fashion Creator (Modern Pashmina, Trendy)">Hijab Creator (Pashmina)</option>
                                         <option value="Cool Gen-Z Boy (Streetwear Vibe, Messy Hair)">Gen-Z Boy (Streetwear)</option>
                                         <option value="Chindo Girl (Luxury & Elegant)">Chindo Girl (Luxury)</option>
+                                        <option value="Corporate SCBD (Smart Casual, Modern Office)">Corporate SCBD (Smart Casual)</option>
+                                        <option value="Athleisure Runner (Sporty Lifestyle, Fresh Energy)">Athleisure Runner (Sporty)</option>
+                                        <option value="Vintage Indie / Blok M (Creative Subculture, Retro Chic)">Vintage Indie (Blok M Style)</option>
                                     </optgroup>
                                     <optgroup label="--- PRODUK ---">
                                         <option value="Faceless / Body Only (Focus on Outfit Details)">Faceless (Body Only)</option>

@@ -168,7 +168,27 @@ export const RAW_HAND_ACTIVITY_WEARABLE = [
     "Pinching a fold of the material to show fabric thickness and hand-feel",
     "Fastening a metal snap button with a satisfying click motion",
     "Checking the woven brand tag and size label with thumb",
-    "Smoothly sliding fingers along the side seam to show flatlock stitching"
+    "Smoothly sliding fingers along the side seam to show flatlock stitching",
+    "Testing the snap button closure with a crisp one-handed pop",
+    "Lightly running fingertips over the ribbed knit collar to show micro-elasticity",
+    "Flipping over the sleeve hem to inspect double-needle flatlock seam integrity",
+    "Gathering the back waistband elastic in one hand to demonstrate stretch tension",
+    "Holding up the fabric against a light beam to prove dense non-see-through weave",
+    "Flicking the metal drawstring aglet lightly with index finger",
+    "Smoothing down the chest pocket flap with thumb to show clean structured press",
+    "Draping the hoodie hood over one wrist to show fabric thickness and double-layer weight",
+    "Tucking the shirt front hem loosely into denim waist to display relaxed tuck drape",
+    "Pinching and releasing the fabric fold to demonstrate zero wrinkle creasing",
+    "Fastening and sliding the heavy-duty YKK metal zip smoothly to the chin",
+    "Resting palm flat against the garment chest to accentuate matte combed-cotton texture",
+    "Gently stretching the sleeve cuff over wrist bone to showcase cuff elasticity and retention",
+    "Holding the garment shoulder seam between two fingers to show reinforced taped shoulder",
+    "Turning the garment collar up to showcase clean underside construction and interfacing",
+    "Brushing back the soft brushed fleece interior to showcase cozy inner nap",
+    "Flicking the garment hem gently to show natural weighty swing and pendulum drape",
+    "Checking the subtle woven side-seam flag label between thumb and index finger",
+    "Aligning both shoulder seams together to demonstrate precise symmetrical pattern cut",
+    "Smoothly running thumb down the placket buttons to show reinforced stitching and buttonhole strength"
 ];
 
 export const RAW_HAND_ACTIVITY_PACKAGING = [
@@ -191,7 +211,27 @@ export const RAW_HAND_ACTIVITY_PACKAGING = [
     "Holding bottle upright near window to show liquid level and clarity",
     "Opening compact magnetic closure with an audible snap",
     "Displaying applicator wand or dropper slowly pulling out",
-    "Tracing the embossed logo typography with index finger"
+    "Tracing the embossed logo typography with index finger",
+    "Twisting open a heavy frosted glass dropper with a smooth satisfying suction sound",
+    "Clicking a magnetic lipstick or compact closure shut with an audible crisp snap",
+    "Pressing a pump bottle twice to show controlled, droplet-free dispenser flow",
+    "Peeling the tamper-evident metallic foil seal slowly back at a 45-degree angle",
+    "Lightly tapping the acrylic bottle base against wooden table to demonstrate solid heft",
+    "Tilting the frosted bottle slowly under sunlight to show liquid viscosity and air bubble flow",
+    "Running index fingernail across the embossed textured brand logo on the box",
+    "Squeezing an aluminum tube gently from the crimped base to show thick paste consistency",
+    "Sliding open an outer rigid slipcase box to reveal inner luxury product bed",
+    "Holding the cosmetic tube horizontally to display clean matte finish and typography",
+    "Rotating the fine-mist spray nozzle to show precision atomization trigger",
+    "Lifting the inner protective plastic hygiene lid off a rich cream jar",
+    "Balancing the tall slender bottle vertically on fingertips to emphasize ergonomic grip",
+    "Swiping a rich balm texture across the back of the hand to demonstrate instant melt",
+    "Displaying the bottom embossed batch code and PAO icon up close",
+    "Unfolding a crisp origami-folded outer packaging sleeve smoothly with one hand",
+    "Holding the product right beside everyday essentials for instant scale reference",
+    "Tapping the metal cushion compact latch to watch it spring open effortlessly",
+    "Carefully pulling a silicone applicator tip out of the tube neck without any messy drippage",
+    "Tracing the gold hot-stamped foil lettering along the bottle shoulder in direct light"
 ];
 
 export const RAW_HAND_ACTIVITY_UNIVERSAL = [
@@ -285,7 +325,26 @@ const RAW_HAND_LOCATIONS = [
     { name: "DESIGN STUDIO WORKBENCH", desc: "Green cutting mat, fabric swatches, metal ruler.", lighting: "Articulated desk lamp direct beam on hands", vibe: "Maker Culture", weight: 6 },
     { name: "RECORD STORE VINYL CRATE", desc: "Vintage cardboard album sleeves, worn edges.", lighting: "Low-hanging warm amber pendant lamp", vibe: "Indie Nostalgia", weight: 4 },
     { name: "ROOFTOP SUNSET LEDGE", desc: "Textured concrete wall, distant skyscraper silhouette.", lighting: "Direct warm golden hour backlight with lens flare", vibe: "Golden Hour Chill", weight: 6 },
-    { name: "AIRPORT DEPARTURE SEAT", desc: "Carry-on suitcase handle, boarding pass resting on knee.", lighting: "Diffused terminal glass-wall daylight", vibe: "Transit Jetlag", weight: 5 }
+    { name: "AIRPORT DEPARTURE SEAT", desc: "Carry-on suitcase handle, boarding pass resting on knee.", lighting: "Diffused terminal glass-wall daylight", vibe: "Transit Jetlag", weight: 5 },
+    { name: "MARBLE CAFE COUNTER WITH MATCHA", desc: "Textured ceramic cup, fine green matcha powder dusted, marble vein.", lighting: "Soft morning diffused window sidelight", vibe: "Minimalist Morning", weight: 8 },
+    { name: "SCBD PEDESTRIAN CROSSING HANDRAIL", desc: "Stainless steel railing, distant blurred business district skyscrapers.", lighting: "Crisp tropical morning sun with metallic specular glint", vibe: "Urban Commute", weight: 6 },
+    { name: "CLEAN LINEN BEDSPREAD WITH SUNBEAM", desc: "Washed beige linen, natural fabric folds, morning light beam on hands.", lighting: "Direct warm morning sunbeam with dust particles", vibe: "Cozy Awakening", weight: 8 },
+    { name: "VINTAGE CASIO WATCH ON DENIM LAP", desc: "Faded indigo denim jeans lap, car window in background.", lighting: "Passing afternoon daylight through car side glass", vibe: "Candid Drive", weight: 8 },
+    { name: "MATTE BLACK COFFEE GRINDER TRAY", desc: "Coffee grounds, stainless portafilter handle, dark timber bench.", lighting: "Focused warm barista counter spotlight", vibe: "Artisan Coffee", weight: 6 },
+    { name: "CERAMIC STUDIO POTTERY TURNTABLE", desc: "Wet clay texture, wood carving knife, unglazed ceramic plate.", lighting: "Diffused skylight on wet ceramic textures", vibe: "Craft & Tactile", weight: 6 },
+    { name: "SCOOTER FOOTBOARD & RETRO HELMET", desc: "Rubber textured scooter mat, vintage pastel scooter floorboard.", lighting: "Warm tropical sunset sidelight", vibe: "Two-Wheeler Urban", weight: 6 },
+    { name: "MINIMALIST WHITE OAK DESK SETUP", desc: "Matte wireless keyboard, aluminum laptop edge, clear water glass.", lighting: "Crisp soft daylight from adjacent large window", vibe: "Desk Minimal", weight: 8 },
+    { name: "PASAR SANTA CASSETTE TAPE STACK", desc: "Clear plastic cassette jewel cases, printed vintage spine labels.", lighting: "Warm tungsten reading bulb directly overhead", vibe: "Analog Vintage", weight: 6 },
+    { name: "GYM FOAM ROLLER & RUBBER DUMBBELL", desc: "Textured black high-density foam, stainless knurled metal grip.", lighting: "Overhead cool sports gym lighting", vibe: "Post-Workout", weight: 6 },
+    { name: "COMMUTER TRAIN SEAT DIVIDER", desc: "Brushed stainless rail, printed ticket in hand, moving train motion.", lighting: "Train ceiling fluorescent tube, rhythmic shadow pulses", vibe: "Transit Rush", weight: 6 },
+    { name: "BAKERY WAX PAPER TRAY", desc: "Crumb-dusted brown parchment, golden croissant flake beside product.", lighting: "Warm golden bakery showcase light", vibe: "Warm Comfort", weight: 8 },
+    { name: "ROOFTOP SUNSET GLASS RAILING", desc: "Clear glass banister with distant highway light streaks, twilight sky.", lighting: "Deep purple and gold twilight ambient illumination", vibe: "City Twilight", weight: 6 },
+    { name: "CONCRETE PLANTER EDGE WITH SUCCULENTS", desc: "Cast architectural concrete, green fleshy leaves, gritty sand.", lighting: "Soft overcast outdoor illumination, ultra-clean contrast", vibe: "Botanical Concrete", weight: 6 },
+    { name: "BLOK M RECORD STORE WOODEN COUNTER", desc: "Old lacquer timber, vintage sticker collage, vinyl cleaning brush.", lighting: "Dim ambient lamp light with nostalgic sepia undertones", vibe: "Subculture Indie", weight: 6 },
+    { name: "HOTEL ROOM BEDSIDE WALNUT TABLE", desc: "Rotary telephone edge, woven table lamp, hotel room keycard.", lighting: "Warm tungsten bed lamp soft glow", vibe: "Quiet Escape", weight: 6 },
+    { name: "AIRPORT PASSPORT CONTROL DESK", desc: "Laminated wooden counter, boarding pass fold, carry-on strap.", lighting: "Diffused international terminal lighting", vibe: "Travel Departure", weight: 6 },
+    { name: "OUTDOOR CAMPING TEAK FOLDING TABLE", desc: "Enamel mug, canvas camp chair texture, pine needles scattered.", lighting: "Filtered morning forest sunlight through tree branches", vibe: "Outdoor Adventure", weight: 6 },
+    { name: "BAMBOO WEAVE PICNIC MAT", desc: "Natural woven fibers, sunny lawn grass fringe, canvas tote bag.", lighting: "Bright sunny afternoon dappled grass light", vibe: "Weekend Picnic", weight: 6 }
 ];
 export const POOL_HAND_LOCATION: WeightedLocation[] = RAW_HAND_LOCATIONS;
 
@@ -536,7 +595,64 @@ export const HUMAN_STYLE_POOLS: Record<string, WeightedItem[]> = {
         "Framing: Side-profile torso framing showing garment silhouette from the side. Vibe: Clean profile fit-check, showcasing sleeve length and drop.",
         "Framing: Chest-to-hip front angle with one thumb hooked into pocket. Vibe: Casual lifestyle lookbook, showing garment stretch and posture.",
         "Framing: Back-of-neck down to mid-back crop. Vibe: Showing rear garment design, back print detail, and shoulder seam construction.",
-        "Framing: 45-degree angled lookbook framing, cropped at collarbone. Vibe: High-end apparel lookbook, showing fabric sheen and stitching."
+        "Framing: 45-degree angled lookbook framing, cropped at collarbone. Vibe: High-end apparel lookbook, showing fabric sheen and stitching.",
+        "Framing: Chest-down square crop centered on fabric weave and chest design. Vibe: High-conversion affiliate review, clean standing posture, hands resting at sides.",
+        "Framing: Chin-down lookbook framing with arms slightly relaxed outwards. Vibe: E-commerce try-on catalog, showing boxy shoulder drop and sleeve proportions.",
+        "Framing: Waist-to-collarbone medium close-up, head cropped at jawline. Vibe: Fabric thickness demonstration, clean tactile lighting, zero distractions.",
+        "Framing: 30-degree dynamic body angle from chest to knee. Vibe: Natural candid walk, fabric flowing with body stride, clean studio pavement backdrop.",
+        "Framing: Low hip-up perspective looking towards torso (neck cropped). Vibe: Bold streetwear catalog silhouette, emphasizing relaxed drape and hemline cut.",
+        "Framing: Behind-the-shoulder rear angle cropped below ears. Vibe: Back graphic showcase, shoulder blade seam alignment, clean minimal lookbook.",
+        "Framing: Torso framing with one hand grasping hem to show stretch recovery. Vibe: Live try-on review, highlighting elastic ribbed fabric and recovery.",
+        "Framing: Overhead 45-degree angle looking down onto shoulders and chest. Vibe: POV mirror check, natural room daylight, showing collar ribbing and fit.",
+        "Framing: Profile side crop from shoulder to mid-thigh. Vibe: Demonstrating side silhouette profile, sleeve cuff width, and hem drop balance.",
+        "Framing: Mid-torso candid angle with relaxed arms, chin out of frame. Vibe: Everyday casual wear catalog, natural fabric creases at elbows and waist.",
+        "Framing: Collarbone-down flatlay perspective on upright mannequin or body. Vibe: Editorial boutique presentation, perfectly balanced symmetry and textures.",
+        "Framing: Chest-to-waist crop with fingers lightly brushing fabric texture. Vibe: Sensory product showcase, highlighting soft cotton fleece or knit grain.",
+        "Framing: Low-angle upward tilt from thigh to collarbone. Vibe: Lengthening catalog look, clean lines, highlighting fabric structure and drop.",
+        "Framing: Full torso and arm framing, head completely cropped. Vibe: Clean neutral catalog try-on, showing sleeve length relative to wrists.",
+        "Framing: Relaxed seated torso crop, leaning slightly forward. Vibe: Natural everyday wear, showing fabric drape when seated, zero face visible."
+    ]),
+    'CORPORATE_SCBD': toWeighted([
+        "Hair: Sleek low ponytail with middle part. Vibe: SCBD smart casual, minimalist lanyard, holding iced Americano, clean gold watch, glass skyscraper lobby.",
+        "Hair: Neat tapered side part with light matte clay. Vibe: Tech startup lead, navy tailored trousers, smart watch, bustling pedestrian crossing.",
+        "Hair: Polished bob blowout tucked behind ears. Vibe: Young consultant, sleek tote bag, minimalist pearl studs, sunlit glass corridor.",
+        "Hair: Clean fade with natural short textured top. Vibe: Creative agency manager, wireframe glasses, leather cardholder, SCBD cafe terrace.",
+        "Hair: Elegant half-up hair with minimal clip. Vibe: High-rise office floor, lanyard draped over shoulder, holding tablet, floor-to-ceiling glass view.",
+        "Hair: Textured French crop, neatly styled. Vibe: Fin-tech professional, minimalist wrist cuff, grab-and-go espresso, lunch break rush.",
+        "Hair: Glossy smooth blowout with curtain bangs. Vibe: Corporate PR specialist, tailored high-waist slacks, delicate necklace, modern co-working space.",
+        "Hair: Tidy side-swept fringe with clean neckline. Vibe: Senior product manager, black minimalist backpack, walking briskly past glass towers.",
+        "Hair: Sleek bun secured with tortoiseshell pin. Vibe: Architectural consultant, holding coffee cup, crisp neutral slacks, sunny atrium.",
+        "Hair: Relaxed textured comb-over with clean temples. Vibe: SCBD creative director, modern minimalist watch, relaxed posture near escalator.",
+        "Hair: Neat low chignon with natural flyaways. Vibe: Corporate lawyer on casual Friday, leather laptop sleeve in hand, confident stride.",
+        "Hair: Tapered crop with subtle side part. Vibe: Young venture partner, tailored pleated trousers, lanyard in hand, sunlit rooftop cafe."
+    ]),
+    'ATHLEISURE_RUNNER': toWeighted([
+        "Hair: High braided ponytail swinging with momentum. Vibe: Morning runner, light dewy sweat, GPS sports watch, early morning city street.",
+        "Hair: Athletic buzz cut fade. Vibe: Urban marathon runner, sweatband on wrist, athletic earbuds, hydrated glowing skin, park track.",
+        "Hair: Slicked high messy bun with sweatband. Vibe: Post-pilates workout, holding metal sports water bottle, glowing flushed cheeks, sunlit studio glass.",
+        "Hair: Short textured crop with athletic headband. Vibe: Hyrox competitor, sports smartwatch, athletic wrist wraps, modern gym turf.",
+        "Hair: Tight French boxer braids. Vibe: Outdoor calisthenics athlete, athletic sunglasses pushed on head, energetic posture, stadium stairs.",
+        "Hair: Natural curly undercut with athletic headband. Vibe: Urban trail runner, sports energy gel in hand, sun-kissed skin, morning mist.",
+        "Hair: Sleek low ponytail threaded through baseball cap. Vibe: Weekend running club, holding iced electrolyte drink, natural post-run glow.",
+        "Hair: Tidy short crop with moisture sheen. Vibe: Functional fitness athlete, chalk on fingertips, athletic posture, outdoor training ground.",
+        "Hair: Bubble ponytail with neon hair ties. Vibe: Track & field sprinter, athletic track surface, energetic smiling candid glance.",
+        "Hair: Clean shaved head with confident jawline. Vibe: Crossfit enthusiast, recovery massage ball in hand, muscular athletic frame.",
+        "Hair: Half-up messy bun with sporty visor. Vibe: Padel tennis player, sports towel around neck, vibrant athletic energy.",
+        "Hair: Tapered sporty fade with sweat droplets. Vibe: Sunset urban cyclist, fingerless cycling gloves, leaning against bike frame."
+    ]),
+    'VINTAGE_INDIE': toWeighted([
+        "Hair: Shaggy 70s wolf cut with choppy bangs. Vibe: Blok M vinyl digger, wire-rimmed round glasses, canvas tote, retro analog vibe.",
+        "Hair: Messy mop-top with natural curls. Vibe: Indie cassette tape collector, vintage Casio digital watch, thrift store aisle.",
+        "Hair: Tousled French bob with wispy micro-bangs. Vibe: Film photography enthusiast, 35mm point-and-shoot camera around neck, quirky smile.",
+        "Hair: Mullet with soft feathered sides. Vibe: Local indie gig guitarist, silver ear rings, guitar strap marks, moody hallway.",
+        "Hair: Two low pigtail braids with colorful retro hair clips. Vibe: Pasar Santa antique collector, canvas messenger bag, artsy aesthetic.",
+        "Hair: Relaxed 90s skater curtains with natural wave. Vibe: Vintage vinyl cafe barista, worn-in sneakers, analog film camera in hand.",
+        "Hair: Textured shag with bleached eyebrow accent. Vibe: Experimental indie artist, vintage silver rings, retro boombox background.",
+        "Hair: Choppy layered bob with beret. Vibe: Independent zine publisher, canvas notebook, fountain pen ink on thumb.",
+        "Hair: Disheveled rocker curls falling over forehead. Vibe: Analog audio engineer, studio headphones around neck, vintage cassette deck.",
+        "Hair: Side-swept 80s layered cut with bandana. Vibe: Retro roller skate park, disposable camera flash, carefree energetic vibe.",
+        "Hair: Soft textured pixie cut. Vibe: Indie cinema enthusiast, vintage tote bag with movie pins, relaxed cafe corner.",
+        "Hair: Loose wavy center part with amber-tinted sunglasses. Vibe: Blok M Melawai street stroll, vintage leather watch, retro nostalgic charm."
     ])
 };
 
@@ -588,7 +704,34 @@ const RAW_HUMAN_LOCATIONS = [
     { name: "TOKYO IZAKAYA LANTERN ALLEY", desc: "Narrow alley, hanging red glowing paper lanterns, wooden sliding lattice door.", lighting: "Warm amber and crimson lantern glow with deep shadowy contrasts", vibe: "Midnight Tokyo", weight: 5 },
     { name: "GLASSHOUSE BOTANICAL CAFE", desc: "Monstera leaves, hanging ferns, cast-iron greenhouse frames, weathered terracotta tiles.", lighting: "Natural diffused sunlight through patterned glass ceiling panes", vibe: "Serene Botanical", weight: 6 },
     { name: "VINYL RECORD LISTENING BOOTH", desc: "Headphone stand, wooden shelving stacked with album spines, warm turntable light.", lighting: "Cozy dim amber spotlight directly illuminating subject, moody dark perimeter", vibe: "Indie Chill", weight: 5 },
-    { name: "NIGHT STREET FOOD STALL WITH STEAM", desc: "Metal folding table, plastic stools, hot vapor steam swirling from cooking pot.", lighting: "Bare hanging incandescent bulb casting warm high-contrast highlights through steam", vibe: "Street Night", weight: 5 }
+    { name: "NIGHT STREET FOOD STALL WITH STEAM", desc: "Metal folding table, plastic stools, hot vapor steam swirling from cooking pot.", lighting: "Bare hanging incandescent bulb casting warm high-contrast highlights through steam", vibe: "Street Night", weight: 5 },
+    { name: "JAKARTA MRT ELEVATED STATION CONCOURSE", desc: "Wide polished floor, glass barriers, tropical morning haze over skyline.", lighting: "Natural morning daylight mixed with recessed ceiling LEDs", vibe: "Urban Transit", weight: 6 },
+    { name: "BLOK M KULINER & CREATIVE HUB", desc: "Red brick walls, neon signage, indie apparel racks, wooden benches.", lighting: "Warm Edison bulbs mixed with colorful storefront neon glow", vibe: "Indie Creative", weight: 8 },
+    { name: "SENOPATI SUNLIT AESTHETIC BRUNCH CAFE", desc: "Limestone counters, large arch windows, fiddle leaf figs, brass accents.", lighting: "Bright diffused morning window light (Ultra-flattering soft contrast)", vibe: "Aesthetic Morning", weight: 8 },
+    { name: "PIK 2 SEASIDE PROMENADE (PANTJOKAN)", desc: "Palm trees, seaside paved walk, modern minimalist architecture.", lighting: "Warm golden coastal breeze sunlight with gentle lens flare", vibe: "Coastal Luxury", weight: 6 },
+    { name: "SCBD PEDESTRIAN CROSSING DURING LUNCH", desc: "Glass skyscrapers, modern crosswalk, brisk urban commuters.", lighting: "High-contrast tropical midday sun with sharp clean shadows", vibe: "Corporate Hustle", weight: 6 },
+    { name: "PASAR SANTA RETRO ROOFTOP KIOSK", desc: "Worn corrugated metal, vintage posters, plastic crate seating.", lighting: "Warm sunset backlight through metal lattice with dusty air motes", vibe: "Underground Thrift", weight: 6 },
+    { name: "KEMANG ARTISANAL CERAMICS WORKSHOP", desc: "Clay pottery wheels, unfinished terracotta vases, rustic wood shelves.", lighting: "Soft diffused daylight through high industrial skylight", vibe: "Artisanal Craft", weight: 6 },
+    { name: "MODERN POD CAPSULE HOTEL LOBBY", desc: "Futuristic circular pod doors, sleek light birch wood, clean lines.", lighting: "Warm recessed floor-edge LED lighting, cozy Scandinavian glow", vibe: "Minimalist Travel", weight: 6 },
+    { name: "HERITAGE KOTA TUA COBBLESTONE ALLEY", desc: "Colonial Dutch facade, aged weathered stucco walls, vintage bicycle.", lighting: "Late afternoon directional sunlight casting long dramatic shadows", vibe: "Heritage Nostalgia", weight: 4 },
+    { name: "CONTEMPORARY INDOOR PADEL TENNIS COURT", desc: "Vibrant blue turf, glass rebound walls, modern sports mesh.", lighting: "Crisp overhead LED stadium floodlights, dynamic sports clarity", vibe: "Sporty Athleisure", weight: 6 },
+    { name: "NIGHT RUNNING TRACK ALONG SENAYAN", desc: "Red synthetic running track, distant GBK stadium lights, dark tropical trees.", lighting: "Cool stadium glow mixed with amber track light posts", vibe: "Night Workout", weight: 6 },
+    { name: "CONTEMPORARY ROOFTOP INFINITY POOL DECK", desc: "Teak sunloungers, calm blue water reflections, distant city skyline.", lighting: "Golden hour sunset reflections rippling off water surface", vibe: "Resort Lifestyle", weight: 6 },
+    { name: "INDOOR CLIMBING & BOULDERING GYM", desc: "Colorful geometric climbing holds, matte chalk dust, grey crash pads.", lighting: "Bright high-bay industrial gym lighting, high contrast", vibe: "Urban Sport", weight: 4 },
+    { name: "COFFEE ROASTERY BEAN SACK AISLE", desc: "Jute burlap coffee sacks stacked high, matte black espresso machine.", lighting: "Warm directional spotlights creating rich caramel shadow tones", vibe: "Roastery Vibe", weight: 6 },
+    { name: "ARCHITECTURAL LIBRARY READING AMPHITHEATER", desc: "Curved light oak steps, sprawling architectural drawings, glass roof.", lighting: "Even diffused daylight through architectural frosted glass", vibe: "Intellectual Chic", weight: 6 },
+    { name: "UNDERGROUND LIVE MUSIC BASEMENT STAGE", desc: "Drum kit silhouette, guitar amplifiers, cable-strewn wood floor.", lighting: "Single red and warm tungsten stage par-can spotlight", vibe: "Indie Gig", weight: 4 },
+    { name: "VINTAGE MOTORCYCLE WORKSHOP & CAFE", desc: "Custom cafe racer bike, polished chrome, leather saddle, wrench rack.", lighting: "Warm garage tungsten pendant lamp with chrome specular reflections", vibe: "Rugged Heritage", weight: 4 },
+    { name: "SUDIRMAN PEDESTRIAN BRIDGE (JPO PINISI)", desc: "Curved wooden ship-like deck, illuminated red barriers, traffic below.", lighting: "Vibrant city night traffic light trails and illuminated handrail LEDs", vibe: "Iconic Transit", weight: 6 },
+    { name: "AESTHETIC MATCHA BAR COUNTER", desc: "Chasen bamboo whisk, matte green ceramic bowls, light hinoki wood bar.", lighting: "Soft clean daylight with subtle warm spotlight on counter", vibe: "Zen Aesthetic", weight: 8 },
+    { name: "COMMUTER LINE TRAIN VESTIBULE (DOOR WINDOW)", desc: "Stainless steel handrails, train window passing green suburban scenery.", lighting: "Fast-moving flicker of sun and shadow through moving train window", vibe: "Daily Commute", weight: 6 },
+    { name: "STREETSIDE KAKI LIMA SEATING BENCH", desc: "Folding blue wooden bench, stainless steel tea dispenser, vintage tile pavement.", lighting: "Warm bare overhead incandescent bulb hanging from canvas tarp", vibe: "Street Soul", weight: 6 },
+    { name: "ROOFTOP BASKETBALL HALF-COURT", desc: "Asphalt court with painted lines, wire-mesh fence, city sunset horizon.", lighting: "Low golden hour sun casting long cinematic human shadows", vibe: "Urban Athletics", weight: 6 },
+    { name: "MINIMALIST WABI-SABI FLOWER STUDIO", desc: "Dried botanical arrangements, unfinished plaster walls, stone plinths.", lighting: "Muted north-facing soft window daylight, gentle soft shadows", vibe: "Wabi-Sabi Organic", weight: 6 },
+    { name: "MODERN LAUNDRY LOUNGE & CAFE", desc: "Stack of industrial front-load washers, pastel tile counters, coffee cups.", lighting: "Clean bright commercial daylight with warm pastel reflections", vibe: "Cozy Chores", weight: 6 },
+    { name: "OUTDOOR AMPHITHEATER STEPPED SEATING", desc: "Weathered gray stone steps, lush tropical garden backdrop, casual hangout.", lighting: "Dappled canopy shade with bright sun patches", vibe: "Campus Weekend", weight: 6 },
+    { name: "OLD RECORD CASSETTE SHOP STALL", desc: "Shelves stacked with vintage Indonesian cassette tapes, CRT television playing.", lighting: "Warm nostalgic glow from CRT screen mixed with dim shelf bulb", vibe: "Retro 90s Local", weight: 4 },
+    { name: "CONTEMPORARY BAKERY GLASS DISPLAY AISLE", desc: "Tiered marble display of golden pastries, brass bakery tongs, warm lighting.", lighting: "Rich golden warm display lighting making surfaces glow", vibe: "Warm Aesthetic", weight: 8 }
 ];
 export const POOL_HUMAN_LOCATION: WeightedLocation[] = RAW_HUMAN_LOCATIONS;
 
@@ -718,7 +861,17 @@ const RAW_CAMERA_AMATEUR = [
     "Slow casual follow tracking behind walking subject (maintaining consistent back perspective)",
     "Eye-level handheld walking glide pacing alongside subject",
     "Smooth handheld tilt-down tracking from face to outfit hemline motion",
-    "Subtle handheld push-in accentuating garment fabric texture and fold physics"
+    "Subtle handheld push-in accentuating garment fabric texture and fold physics",
+    "Gentle forward camera push-in pacing with subject's footsteps, keeping outfit centered",
+    "Low-angle handheld tracking tilt from footwear up to chest as subject takes two steps",
+    "Casual shoulder-level glance-follow pan as subject turns slightly towards window",
+    "Dynamic TikTok-style whip-stop pan locking immediately onto garment texture",
+    "Handheld chest-height tracking glide moving steadily forward as subject walks",
+    "Organic selfie POV micro-sway with casual arm-extension perspective",
+    "Slow descending handheld tilt following hand unboxing product onto table",
+    "Handheld 20-degree lateral arc drift maintaining product sharp in foreground focus",
+    "Slight spontaneous zoom-pulse mimicking smartphone camera tap-to-focus",
+    "Casual eye-level tracking dolly following model's relaxed stroll across pavement"
 ];
 export const POOL_CAMERA_AMATEUR = toWeighted(RAW_CAMERA_AMATEUR);
 
@@ -737,7 +890,18 @@ const RAW_CAMERA_CINEMATIC = [
     "Low-angle dynamic tracking shot gliding alongside walking subject",
     "Gentle 35-degree dynamic orbital track accentuating fabric flow while keeping subject angled towards camera",
     "Precise optical rack focus from background environment to outfit zipper and chest print",
-    "Slow smooth jib crane-down from eye level to waist level following subject movement"
+    "Slow smooth jib crane-down from eye level to waist level following subject movement",
+    "Slow cinematic 45-degree curved slider dolly gliding past subject while maintaining tight garment focus",
+    "Smooth low-angle Steadicam glide walking backwards in front of subject's confident stride",
+    "Precision motorized zoom-in holding razor-sharp focus on fabric weave with cream bokeh background",
+    "Subtle 25-degree orbital jib arc revealing subject and background architecture in one continuous motion",
+    "Smooth linear lateral tracking shot sliding parallel to subject walking alongside textured concrete wall",
+    "Cinematic vertical pedestal rise from waist hemline up to chest collar, revealing full outfit drape",
+    "Slow-motion 60fps tracking push-in capturing fabric dynamic fold physics and sway",
+    "Gentle crane-down and push-in landing in intimate three-quarter outfit perspective",
+    "Smooth 180-degree rotational lens roll (locked on subject, rolling horizon 15 degrees for editorial drama)",
+    "Macro cinematic rack focus shifting smoothly from distant city lights to crisp foreground zipper pull",
+    "Steadicam forward tracking follow shot maintaining perfect distance behind subject's walking rhythm"
 ];
 export const POOL_CAMERA_CINEMATIC = toWeighted(RAW_CAMERA_CINEMATIC);
 
@@ -775,26 +939,35 @@ export const POOL_VIDEO_ARTIFACTS = toWeighted(RAW_VIDEO_ARTIFACTS);
 // === 6. HELPER TO GET STYLE KEY ===
 export const mapModelToStyleKey = (modelSelection: string): string => {
     const s = modelSelection.toLowerCase();
-    
+
     // Faceless / Body Only
     if (s.includes('faceless') || s.includes('body only')) return 'FACELESS_BODY';
+
+    // Corporate / SCBD
+    if (s.includes('scbd') || s.includes('corporate') || s.includes('kantor') || s.includes('office')) return 'CORPORATE_SCBD';
+
+    // Athleisure / Sport
+    if (s.includes('athleisure') || s.includes('runner') || s.includes('sport') || s.includes('gym')) return 'ATHLEISURE_RUNNER';
+
+    // Vintage / Indie
+    if (s.includes('indie') || s.includes('vintage') || s.includes('blok m') || s.includes('retro')) return 'VINTAGE_INDIE';
 
     // Hijab Styles
     if (s.includes('creator') || s.includes('pashmina') || s.includes('trendy')) return 'HIJAB_CREATOR';
     if (s.includes('muslimah') || s.includes('syari') || s.includes('hijab')) return 'HIJAB_MUSLIMAH';
-    
+
     // Korean / Oppa
     if (s.includes('korean') || s.includes('oppa')) return 'OPPA_KOREA';
-    
+
     // Chindo Luxury / Elegant
     if (s.includes('chindo')) return 'CHINDO_ELEGANT';
 
     // Specific Viral Aesthetics
     if (s.includes('clean girl')) return 'CLEAN_GIRL';
     if (s.includes('y2k')) return 'EDGY_Y2K';
-    
+
     // Street / Local Male & General
     if (s.includes('lokal') || s.includes('street') || s.includes('boy') || s.includes('guy') || s.includes('pria') || s.includes('cowok')) return 'REALISTIC_STREET';
-    
-    return 'TIKTOK_GIRL'; 
+
+    return 'TIKTOK_GIRL';
 };
