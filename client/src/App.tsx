@@ -247,8 +247,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative text-zinc-300 font-sans overflow-hidden selection:bg-neon/30 selection:text-white flex flex-col bg-dark">
-      
+    <div className="min-h-screen relative text-zinc-300 font-sans overflow-hidden selection:bg-red-950 selection:text-red-300 flex flex-col bg-zinc-950">
+
       <ToastContainer toasts={toasts} removeToast={removeToast} />
 
       {/* STUDIO BACKGROUND */}
@@ -261,14 +261,14 @@ const App: React.FC = () => {
       <Header onOpenSettings={() => setShowApiKeyModal(true)} onShowWelcome={() => setShowWelcome(true)} modelName={modelName} />
 
       <main className="max-w-xl mx-auto px-4 pt-28 pb-32 flex-grow w-full relative z-10">
-        
+
         {activePage === 'create' && (
             <div className="animate-fade-in w-full">
                 {!analysis ? (
-                    <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/5 rounded-3xl shadow-2xl overflow-hidden relative">
-                         {/* Neon Line Top */}
-                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon/20 via-neon to-neon/20"></div>
-                         
+                    <div className="bg-zinc-950/80 backdrop-blur-xl border border-zinc-800/80 rounded-3xl shadow-2xl overflow-hidden relative">
+                         {/* Top Accent Line */}
+                         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-red-600 to-transparent"></div>
+
                          <OutfitStudio
                             apiKey={apiKey}
                             onAnalysisComplete={handleOutfitAnalysisCompleteWithModel}
@@ -282,23 +282,30 @@ const App: React.FC = () => {
                 ) : (
                     <div className="space-y-8">
                          {/* Result Header */}
-                         <div className="flex items-center gap-6 p-4 bg-zinc-900/30 border border-neon/20 rounded-2xl backdrop-blur-md">
-                            {/* REMOVED GRAYSCALE HERE */}
-                            <div className="flex gap-2">
-                                <img src={`data:${image.mimeType};base64,${image.base64}`} className="w-20 h-20 object-cover rounded-lg border border-zinc-700 transition-all duration-500" />
+                         <div className="flex items-center gap-4 sm:gap-6 p-4 bg-zinc-950/80 border border-zinc-800 rounded-2xl backdrop-blur-xl shadow-xl">
+                            <div className="flex gap-2 shrink-0">
+                                <img src={`data:${image.mimeType};base64,${image.base64}`} alt="Depan" className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-zinc-700/80 shadow-md" />
                                 {backImage && (
-                                    <img src={`data:${backImage.mimeType};base64,${backImage.base64}`} className="w-20 h-20 object-cover rounded-lg border border-zinc-700 transition-all duration-500" />
+                                    <img src={`data:${backImage.mimeType};base64,${backImage.base64}`} alt="Belakang" className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-red-900/60 shadow-md" />
                                 )}
                             </div>
-                            <div className="flex-1">
-                                <h3 className="text-white font-bold font-display text-lg">Subjek Terdeteksi</h3>
-                                <p className="text-xs text-neon/80 mt-1 uppercase tracking-widest font-mono animate-pulse">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                    <span className="text-[10px] font-mono uppercase tracking-widest text-red-500 font-semibold">Produksi Siap</span>
+                                </div>
+                                <h3 className="text-white font-bold text-base sm:text-lg truncate mt-0.5">Subjek Teridentifikasi</h3>
+                                <p className="text-[10px] sm:text-xs text-zinc-400 mt-1 uppercase tracking-widest font-mono">
                                     {isLoading ? LOADING_MESSAGES[loadingPhase] : `Analisa Selesai (${currentSceneCount} Scene)`}
                                 </p>
                             </div>
                             {!isLoading && (
-                                <button onClick={backToStudio} className="p-3 bg-neon/10 hover:bg-neon/30 text-neon hover:text-white rounded-xl border border-neon/30 transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                <button
+                                    onClick={backToStudio}
+                                    title="Kembali ke Studio Input"
+                                    className="p-2.5 sm:p-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white rounded-xl transition-all shadow-sm shrink-0"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
                                     </svg>
                                 </button>
@@ -308,7 +315,7 @@ const App: React.FC = () => {
                          {/* Loading Bar */}
                          {isLoading && (
                              <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
-                                 <div className="h-full bg-neon animate-progress shadow-[0_0_10px_#a3e635]"></div>
+                                 <div className="h-full bg-red-600 animate-progress shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
                              </div>
                          )}
 
@@ -316,10 +323,10 @@ const App: React.FC = () => {
                          {analysis && (
                              <div className="space-y-6">
                                  {analysis.concepts.map((concept, idx) => (
-                                    <ConceptCard 
-                                        key={idx} 
-                                        concept={concept} 
-                                        index={idx} 
+                                    <ConceptCard
+                                        key={idx}
+                                        concept={concept}
+                                        index={idx}
                                         defaultOpen={idx === 0}
                                         options={options}
                                         onRegenerate={() => handleRegenerateSingle(idx)}
@@ -338,7 +345,13 @@ const App: React.FC = () => {
 
         {activePage === 'library' && (
             <div className="animate-fade-in">
-                <h2 className="text-2xl font-mono text-neon mb-6 tracking-widest text-center">Arsip Studio</h2>
+                <div className="text-center mb-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-600/30 bg-red-950/20 text-red-400 font-mono text-[10px] uppercase tracking-widest mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                      Arsip Produksi
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold font-mono text-white tracking-wider uppercase">History Gallery</h2>
+                </div>
                 <HistoryGallery isActive={activePage === 'library'} onLoadItem={handleLoadHistory} />
             </div>
         )}

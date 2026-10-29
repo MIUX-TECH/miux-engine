@@ -1312,11 +1312,30 @@ export const generateSpeech = async (
              };
         }
 
-        let promptText = text;
+        // Sanitize text: normalize newlines to prevent unnatural multi-second pauses in Gemini TTS
+        let sanitizedText = text;
+        if (!isMulti) {
+            sanitizedText = sanitizedText
+                .replace(/\r\n/g, '\n')
+                .replace(/\n{2,}/g, '. ')
+                .replace(/\n/g, ', ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        } else {
+            // Keep dialogue speaker turns intact while collapsing internal blank lines
+            sanitizedText = sanitizedText
+                .replace(/\r\n/g, '\n')
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean)
+                .join('\n');
+        }
+
+        let promptText = sanitizedText;
         if (config.style === 'asmr') {
-            promptText = `<speak><prosody volume="soft" pitch="low" rate="medium">${text.replace(/[<>&]/g, '')}</prosody></speak>`;
+            promptText = `<speak><prosody volume="soft" pitch="low" rate="medium">${sanitizedText.replace(/[<>&]/g, '')}</prosody></speak>`;
         } else if (config.style === 'hype') {
-            promptText = `<speak><prosody volume="loud" pitch="high" rate="fast">${text.replace(/[<>&]/g, '')}</prosody></speak>`;
+            promptText = `<speak><prosody volume="loud" pitch="high" rate="fast">${sanitizedText.replace(/[<>&]/g, '')}</prosody></speak>`;
         }
 
         const base64PCM = await executeWithKeyPool(apiKey, async (ai, model) => {
@@ -1341,9 +1360,36 @@ export const generateSpeech = async (
             return pcm;
         }, { baseUrl, preferredModel, isAudioGeneration: true });
 
-        const pcmBytes = base64ToUint8Array(base64PCM);
+        let pcmBytes = base64ToUint8Array(base64PCM);
+
+        // Ensure 16-bit word alignment (even byte count)
+        if (pcmBytes.length % 2 !== 0) {
+            pcmBytes = pcmBytes.subarray(0, pcmBytes.length - 1);
+        }
+
+        // Apply smooth linear fade-out over last 480 samples (~20ms at 24kHz) to eliminate ending click/kresek
+        const sampleCount = Math.floor(pcmBytes.length / 2);
+        const fadeLength = Math.min(480, sampleCount);
+        if (fadeLength > 0) {
+            const dataView = new DataView(pcmBytes.buffer, pcmBytes.byteOffset, pcmBytes.byteLength);
+            for (let i = 0; i < fadeLength; i++) {
+                const sampleIndex = sampleCount - fadeLength + i;
+                const byteOffset = sampleIndex * 2;
+                const currentVal = dataView.getInt16(byteOffset, true);
+                const factor = (fadeLength - 1 - i) / fadeLength;
+                dataView.setInt16(byteOffset, Math.round(currentVal * factor), true);
+            }
+        }
+
         const sampleRate = config.sampleRate || 24000;
-        const wavBytes = addWavHeader(pcmBytes, sampleRate, 1);
+        // Pad 100ms of clean silence (zero-padding) at the end to prevent abrupt decoder cutoff
+        const silenceSamples = Math.floor(sampleRate * 0.1);
+        const silenceBytes = new Uint8Array(silenceSamples * 2);
+        const cleanPcmBytes = new Uint8Array(pcmBytes.length + silenceBytes.length);
+        cleanPcmBytes.set(pcmBytes, 0);
+        cleanPcmBytes.set(silenceBytes, pcmBytes.length);
+
+        const wavBytes = addWavHeader(cleanPcmBytes, sampleRate, 1);
         const base64Wav = uint8ArrayToBase64(wavBytes);
 
         return `data:audio/wav;base64,${base64Wav}`;

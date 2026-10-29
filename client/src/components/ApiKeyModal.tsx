@@ -59,11 +59,11 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
         )}
 
         <div className="text-center mb-6">
-          <div className="w-14 h-14 bg-zinc-900 border border-neon/30 rounded-2xl mx-auto flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(163,230,53,0.15)]">
-            <span className="text-2xl font-mono text-neon font-bold">M</span>
+          <div className="w-14 h-14 bg-zinc-950 border border-red-600/60 rounded-2xl mx-auto flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(220,38,38,0.25)]">
+            <span className="text-2xl font-mono text-red-500 font-black">M</span>
           </div>
           <h2 className="text-xl font-mono tracking-widest text-white mb-1">
-            MIUX <span className="text-neon">STUDIO</span>
+            MIUX <span className="text-red-500">STUDIO</span>
           </h2>
           <p className="text-xs text-zinc-400 font-mono">
             Aktivasi Google AI Studio Engine
@@ -71,23 +71,23 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
         </div>
 
         {/* Free API Key Guide */}
-        <div className="mb-5 p-4 bg-neon/5 border border-neon/20 rounded-2xl">
+        <div className="mb-5 p-4 bg-red-950/20 border border-red-600/30 rounded-2xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-neon uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5 font-mono">
               <span>⚡</span> Dapatkan API Key Gratis
             </span>
             <a
               href="https://aistudio.google.com/app/apikey"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] font-mono text-neon underline hover:text-white transition-colors"
+              className="text-[11px] font-mono text-red-400 underline hover:text-white transition-colors"
             >
               Buka AI Studio ↗
             </a>
           </div>
           <ol className="text-[11px] text-zinc-300 space-y-1.5 list-decimal list-inside font-sans leading-relaxed">
             <li>Buka <strong className="text-white">aistudio.google.com/app/apikey</strong></li>
-            <li>Login akun Google & klik <strong className="text-neon">"Create API key"</strong></li>
+            <li>Login akun Google & klik <strong className="text-red-400">"Create API key"</strong></li>
             <li>Salin API Key lalu tempelkan pada kolom di bawah</li>
           </ol>
         </div>
@@ -96,13 +96,13 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
         <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[10px] font-bold text-neon/80 uppercase tracking-widest">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest font-mono">
                 API Key Google AI Studio
               </label>
               {parsedKeys.length > 0 && (
                 <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
                   parsedKeys.length > 1
-                    ? 'bg-neon/15 border-neon text-neon shadow-[0_0_8px_rgba(163,230,53,0.2)]'
+                    ? 'bg-red-950/50 border-red-500 text-red-400 shadow-[0_0_8px_rgba(220,38,38,0.3)]'
                     : 'bg-zinc-800 border-zinc-700 text-zinc-400'
                 }`}>
                   {parsedKeys.length > 1 ? `⚡ ${parsedKeys.length} Keys Pool (Rotasi Otomatis)` : '1 Key'}
@@ -113,12 +113,12 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
             <textarea
               rows={parsedKeys.length > 1 ? 4 : 3}
               value={inputKey}
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                 setInputKey(e.target.value);
                 setError('');
               }}
               placeholder="Tempel API Key Google AI Studio Anda di sini... (contoh: AIzaSy...)"
-              className="w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon/20 transition-all font-mono text-xs leading-relaxed resize-none"
+              className="w-full bg-black/70 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-600/80 transition-all font-mono text-xs leading-relaxed resize-none"
             />
 
             <p className="text-[11px] text-zinc-400 mt-2 font-sans leading-normal">
@@ -134,7 +134,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, onClose }) =>
 
           <button
             onClick={handleSubmit}
-            className="w-full py-3.5 mt-2 bg-neon/15 hover:bg-neon text-neon hover:text-black border border-neon/40 rounded-xl font-bold text-xs tracking-widest uppercase transition-all shadow-[0_0_15px_rgba(163,230,53,0.15)] active:scale-[0.99]"
+            className="w-full py-3.5 mt-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold font-mono text-xs tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] active:scale-[0.99]"
           >
             SIMPAN & AKTIFKAN ENGINE
           </button>

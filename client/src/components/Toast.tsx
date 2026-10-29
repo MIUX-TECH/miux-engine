@@ -15,9 +15,9 @@ const ToastItem: React.FC<{ toast: ToastMessage; removeToast: (id: string) => vo
   }, [toast.id, removeToast]);
 
   const bgColors = {
-    success: 'bg-neon/10 border-neon/50 text-neon',
-    error: 'bg-red-500/10 border-red-500/50 text-red-500',
-    info: 'bg-zinc-500/10 border-zinc-500/50 text-zinc-400',
+    success: 'bg-zinc-950/90 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]',
+    error: 'bg-zinc-950/90 border-red-500/50 text-red-400 shadow-[0_0_15px_rgba(220,38,38,0.2)]',
+    info: 'bg-zinc-950/90 border-zinc-700/60 text-zinc-300 shadow-[0_0_15px_rgba(255,255,255,0.05)]',
   };
 
   const icons = {
@@ -55,7 +55,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, removeToast }) 
   return (
     <div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end pointer-events-none">
       <div className="pointer-events-auto">
-        {toasts.map((toast) => (
+        {toasts.map((toast: ToastMessage) => (
           <ToastItem key={toast.id} toast={toast} removeToast={removeToast} />
         ))}
       </div>
