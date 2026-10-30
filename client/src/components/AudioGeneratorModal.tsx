@@ -62,13 +62,20 @@ async function renderAudioToVideoBlob(
   source.connect(analyser);
   analyser.connect(dest);
 
-  const canvasStream = (canvas as any).captureStream ? (canvas as any).captureStream(30) : null;
+  const canvasStream: MediaStream | null = (canvas as any).captureStream
+    ? (canvas as any).captureStream(30)
+    : (canvas as any).webkitCaptureStream
+    ? (canvas as any).webkitCaptureStream(30)
+    : null;
   if (!canvasStream) throw new Error('Browser tidak mendukung Canvas stream capture.');
 
-  const combinedStream = new MediaStream([
-    ...canvasStream.getVideoTracks(),
-    ...dest.getAudioTracks()
-  ]);
+  const combinedStream = new MediaStream();
+  if (canvasStream.getVideoTracks) {
+    canvasStream.getVideoTracks().forEach((track: MediaStreamTrack) => combinedStream.addTrack(track));
+  }
+  if (dest.stream && dest.stream.getAudioTracks) {
+    dest.stream.getAudioTracks().forEach((track: MediaStreamTrack) => combinedStream.addTrack(track));
+  }
 
   const candidates = [
     'video/mp4;codecs=avc1,mp4a.40.2',
@@ -77,12 +84,13 @@ async function renderAudioToVideoBlob(
     'video/webm;codecs=vp8,opus',
     'video/webm'
   ];
-  const mimeType = candidates.find(t => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(t)) || 'video/webm';
+  const mimeType = candidates.find(t => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(t)) || '';
 
-  const recorder = new MediaRecorder(combinedStream, {
-    mimeType,
-    videoBitsPerSecond: 2500000
-  });
+  const recorderOptions: MediaRecorderOptions = { videoBitsPerSecond: 2500000 };
+  if (mimeType) {
+    recorderOptions.mimeType = mimeType;
+  }
+  const recorder = new MediaRecorder(combinedStream, recorderOptions);
 
   const chunks: Blob[] = [];
   recorder.ondataavailable = (e) => {
@@ -283,13 +291,16 @@ async function renderAudioToVideoBlob(
 
     recorder.onstop = () => {
       cancelAnimationFrame(animId);
+      combinedStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       audioCtx.close().catch(() => {});
-      const blob = new Blob(chunks, { type: mimeType });
+      const actualType = recorder.mimeType || mimeType || 'video/mp4';
+      const blob = new Blob(chunks, { type: actualType });
       resolve(blob);
     };
 
     recorder.onerror = (e) => {
       cancelAnimationFrame(animId);
+      combinedStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       audioCtx.close().catch(() => {});
       reject(e);
     };
