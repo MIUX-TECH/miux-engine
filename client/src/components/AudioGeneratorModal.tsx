@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { generateSpeech } from '../services/geminiService';
 import { NarrationStyle } from '../types';
+import { fixMediaBlobDuration } from '../utils/mediaDurationFixer';
 
 interface AudioGeneratorModalProps {
   isOpen: boolean;
@@ -289,13 +290,19 @@ async function renderAudioToVideoBlob(
       }
     };
 
-    recorder.onstop = () => {
+    recorder.onstop = async () => {
       cancelAnimationFrame(animId);
       combinedStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       audioCtx.close().catch(() => {});
       const actualType = recorder.mimeType || mimeType || 'video/mp4';
-      const blob = new Blob(chunks, { type: actualType });
-      resolve(blob);
+      const rawBlob = new Blob(chunks, { type: actualType });
+      try {
+        const fixedBlob = await fixMediaBlobDuration(rawBlob, totalDuration);
+        resolve(fixedBlob);
+      } catch (err) {
+        console.warn('Gagal mem-patch container duration, fallback ke raw blob:', err);
+        resolve(rawBlob);
+      }
     };
 
     recorder.onerror = (e) => {
